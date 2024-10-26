@@ -8,7 +8,7 @@ import (
 	"github.com/yyle88/erero"
 )
 
-func NewRepoWorktree(root string) (repo *git.Repository, worktree *git.Worktree, err error) {
+func NewRepoWorktreeWithIgnore(root string) (repo *git.Repository, worktree *git.Worktree, err error) {
 	repo, err = NewRepo(root)
 	if err != nil {
 		return nil, nil, erero.Wro(err)
@@ -28,8 +28,8 @@ func NewRepoWorktree(root string) (repo *git.Repository, worktree *git.Worktree,
 	return repo, worktree, nil
 }
 
-func NewWorktree(root string) (worktree *git.Worktree, err error) {
-	_, worktree, err = NewRepoWorktree(root)
+func NewWorktreeWithIgnore(root string) (worktree *git.Worktree, err error) {
+	_, worktree, err = NewRepoWorktreeWithIgnore(root)
 	if err != nil {
 		return nil, erero.Wro(err)
 	}

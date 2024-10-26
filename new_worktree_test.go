@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewWorktree(t *testing.T) {
-	worktree, err := NewWorktree(runpath.PARENT.Path())
+	worktree, err := NewWorktreeWithIgnore(runpath.PARENT.Path())
 	require.NoError(t, err)
 
 	status, err := worktree.Status()

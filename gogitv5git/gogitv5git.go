@@ -8,50 +8,39 @@ import (
 	"github.com/pkg/errors"
 	"github.com/yyle88/done"
 	"github.com/yyle88/erero"
-	"github.com/yyle88/must"
 	"github.com/yyle88/zaplog"
 	"go.uber.org/zap"
 )
 
 type Client struct {
-	repo *git.Repository
+	repo     *git.Repository
+	worktree *git.Worktree
 }
 
 func New(root string) (*Client, error) {
-	repo, err := gogitv5acp.NewRepo(root)
+	repo, worktree, err := gogitv5acp.NewRepoWorktreeWithIgnore(root)
 	if err != nil {
 		return nil, erero.Wro(err)
 	}
-	return NewClient(repo)
+	return NewClient(repo, worktree)
 }
 
-func NewClient(repo *git.Repository) (*Client, error) {
-	worktree, err := repo.Worktree()
-	if err != nil {
-		return nil, erero.Wro(err) //in case of bare repo 裸仓库
-	}
-	must.OK(worktree) //meaningless
-
+func NewClient(repo *git.Repository, worktree *git.Worktree) (*Client, error) {
 	return &Client{
-		repo: repo,
+		repo:     repo,
+		worktree: worktree, //这里最好是使用已经设置 ignore 的对象，否则有可能会提交些没用的东西
 	}, nil
 }
 
-func (G *Client) worktree() *git.Worktree {
-	return done.VCE(G.repo.Worktree()).Nice()
-}
-
 func (G *Client) AddAll() error {
-	worktree := G.worktree()
-	if err := worktree.AddWithOptions(&git.AddOptions{All: true}); err != nil {
+	if err := G.worktree.AddWithOptions(&git.AddOptions{All: true}); err != nil {
 		return erero.Wro(err)
 	}
 	return nil
 }
 
 func (G *Client) Status() (git.Status, error) {
-	worktree := G.worktree()
-	status, err := worktree.Status() // We can verify the current status of the worktree using the method Status.
+	status, err := G.worktree.Status() // We can verify the current status of the worktree using the method Status.
 	if err != nil {
 		return nil, erero.Wro(err)
 	}
@@ -62,8 +51,7 @@ func (G *Client) Commit(options CommitOptions) (string, error) {
 	msg := options.message()
 	zaplog.ZAPS.P1.SUG.Info("commit: ", "msg: ", msg)
 
-	worktree := G.worktree()
-	return G.seeCommit(worktree.Commit(msg, &git.CommitOptions{
+	return G.seeCommit(G.worktree.Commit(msg, &git.CommitOptions{
 		All:    true, //是否提交已经删除的东西，通常是true的，毕竟不提交删除的场景，基本是没有的
 		Author: options.authors(),
 	}))
@@ -80,8 +68,7 @@ func (G *Client) CAmend(options CommitOptions) (string, error) {
 	}
 	zaplog.ZAPS.P1.SUG.Info("camend: ", "msg: ", msg)
 
-	worktree := G.worktree()
-	return G.seeCommit(worktree.Commit(msg, &git.CommitOptions{
+	return G.seeCommit(G.worktree.Commit(msg, &git.CommitOptions{
 		Author: options.authors(),
 		Amend:  true, //注意这里有"all and amend cannot be used together"的限制，因此前面的"all"不要设置
 	}))

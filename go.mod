@@ -10,7 +10,6 @@ require (
 	github.com/yyle88/done v1.0.12
 	github.com/yyle88/erero v1.0.11
 	github.com/yyle88/formatgo v1.0.14
-	github.com/yyle88/must v0.0.3
 	github.com/yyle88/neatjson v0.0.8
 	github.com/yyle88/osexistpath v0.0.9
 	github.com/yyle88/runpath v1.0.9
@@ -38,6 +37,7 @@ require (
 	github.com/sergi/go-diff v1.3.2-0.20230802210424-5b0b94c5c0d3 // indirect
 	github.com/skeema/knownhosts v1.3.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
+	github.com/yyle88/must v0.0.3 // indirect
 	github.com/yyle88/mutexmap v1.0.6 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.28.0 // indirect

@@ -12,7 +12,7 @@ import (
 func TestNewFmtActiveFilesOptions(t *testing.T) {
 	root := runpath.PARENT.Path()
 
-	worktree, err := NewWorktree(root)
+	worktree, err := NewWorktreeWithIgnore(root)
 	require.NoError(t, err)
 
 	options := NewFmtActiveFilesOptions(root).

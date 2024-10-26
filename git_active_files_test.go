@@ -14,7 +14,7 @@ import (
 func TestGetActiveFiles(t *testing.T) {
 	root := runpath.PARENT.Path()
 
-	worktree, err := NewWorktree(root)
+	worktree, err := NewWorktreeWithIgnore(root)
 	require.NoError(t, err)
 
 	options := &GetActiveFilesOptions{
@@ -38,7 +38,7 @@ func TestGetActiveFiles(t *testing.T) {
 func TestGetActiveFiles_Execute_GoFormatFile(t *testing.T) {
 	root := runpath.PARENT.Path()
 
-	worktree, err := NewWorktree(root)
+	worktree, err := NewWorktreeWithIgnore(root)
 	require.NoError(t, err)
 
 	options := NewGetActiveFilesOptions(root).
@@ -75,7 +75,7 @@ func TestGetActiveFiles_Execute_GoFormatFile(t *testing.T) {
 func TestGetActiveFilesOptions_SetRunOnFilePath(t *testing.T) {
 	root := runpath.PARENT.Path()
 
-	worktree, err := NewWorktree(root)
+	worktree, err := NewWorktreeWithIgnore(root)
 	require.NoError(t, err)
 
 	activeFiles, err := GetActiveFiles(worktree, NewGetActiveFilesOptions(root).SetRunOnFilePath(func(path string) {
