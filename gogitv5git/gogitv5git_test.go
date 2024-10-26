@@ -34,7 +34,7 @@ func TestClient_Commit(t *testing.T) {
 
 		t.Log(neatjsons.S(status))
 
-		commitHash, err := client.Commit(&CommitOptions{})
+		commitHash, err := client.Commit(CommitOptions{})
 		require.NoError(t, err)
 		t.Log(commitHash)
 	}

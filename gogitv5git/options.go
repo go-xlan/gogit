@@ -14,24 +14,24 @@ type CommitOptions struct {
 	Message string
 }
 
-func (options *CommitOptions) newName() string {
+func (options *CommitOptions) name() string {
 	return utils.SOrX(options.Name, "gogitv5acp")
 }
 
-func (options *CommitOptions) newEmails() string {
+func (options *CommitOptions) emails() string {
 	return utils.SOrX(options.Emails, "gogitv5acp@github.com")
 }
 
-func (options *CommitOptions) newMessage() string {
+func (options *CommitOptions) message() string {
 	return utils.SOrR(options.Message, func() string {
 		return fmt.Sprintf(`git commit -m "%s %s"`, "gogitv5acp", time.Now().Format("2006-01-02 15:04:05"))
 	})
 }
 
-func (options *CommitOptions) newAuthors() *object.Signature {
+func (options *CommitOptions) authors() *object.Signature {
 	return &object.Signature{
-		Name:  options.newName(),
-		Email: options.newEmails(),
+		Name:  options.name(),
+		Email: options.emails(),
 		When:  time.Now(),
 	}
 }

@@ -8,5 +8,7 @@ import (
 
 func TestCommitOptions_Signature(t *testing.T) {
 	options := CommitOptions{}
-	t.Log(neatjsons.S(options.newAuthors()))
+	t.Log(options.message())
+
+	t.Log(neatjsons.S(options.authors()))
 }

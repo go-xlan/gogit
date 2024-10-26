@@ -4,6 +4,7 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-xlan/gogitv5acp"
+	"github.com/go-xlan/gogitv5acp/internal/utils"
 	"github.com/pkg/errors"
 	"github.com/yyle88/done"
 	"github.com/yyle88/erero"
@@ -57,29 +58,31 @@ func (G *Client) Status() (git.Status, error) {
 	return status, nil
 }
 
-func (G *Client) Commit(options *CommitOptions) (string, error) {
-	msg := options.newMessage()
+func (G *Client) Commit(options CommitOptions) (string, error) {
+	msg := options.message()
 	zaplog.ZAPS.P1.SUG.Info("commit: ", "msg: ", msg)
 
 	worktree := G.worktree()
 	return G.seeCommit(worktree.Commit(msg, &git.CommitOptions{
 		All:    true, //是否提交已经删除的东西，通常是true的，毕竟不提交删除的场景，基本是没有的
-		Author: options.newAuthors(),
+		Author: options.authors(),
 	}))
 }
 
-func (G *Client) CAmend(options *CommitOptions) (string, error) {
+func (G *Client) CAmend(options CommitOptions) (string, error) {
 	msg := options.Message
-	if msg == "" {
+	if msg == "" { //当不填的时候就需要从最新一次的commit里拿到信息，这样才叫追加内容的提交
 		reference := done.VCE(G.repo.Head()).Nice()
 		commit := done.VCE(G.repo.CommitObject(reference.Hash())).Nice()
-		msg = commit.Message
+		msg = utils.SOrR(commit.Message, func() string {
+			return options.message()
+		})
 	}
 	zaplog.ZAPS.P1.SUG.Info("camend: ", "msg: ", msg)
 
 	worktree := G.worktree()
 	return G.seeCommit(worktree.Commit(msg, &git.CommitOptions{
-		Author: options.newAuthors(),
+		Author: options.authors(),
 		Amend:  true, //注意这里有"all and amend cannot be used together"的限制，因此前面的"all"不要设置
 	}))
 }
