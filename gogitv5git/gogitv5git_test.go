@@ -12,7 +12,6 @@ import (
 
 func TestNew(t *testing.T) {
 	root := filepath.Dir(runpath.PARENT.Path())
-
 	client, err := New(root)
 	require.NoError(t, err)
 
@@ -24,10 +23,9 @@ func TestNew(t *testing.T) {
 
 func TestClient_Commit(t *testing.T) {
 	root := filepath.Dir(runpath.PARENT.Path())
-
 	client := done.VCE(New(root)).Nice()
 
-	if false {
+	if false { //not commit in this test case
 		err := client.AddAll()
 		require.NoError(t, err)
 

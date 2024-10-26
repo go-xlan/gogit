@@ -6,3 +6,10 @@ func SOrX(s, x string) string {
 	}
 	return s
 }
+
+func SOrR(s string, run func() string) string {
+	if s == "" {
+		return run()
+	}
+	return s
+}
