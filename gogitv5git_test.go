@@ -1,7 +1,6 @@
 package gogitv5git
 
 import (
-	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -11,7 +10,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	root := filepath.Dir(runpath.PARENT.Path())
+	root := runpath.PARENT.Path()
 	client, err := New(root)
 	require.NoError(t, err)
 
@@ -22,7 +21,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestClient_Commit(t *testing.T) {
-	root := filepath.Dir(runpath.PARENT.Path())
+	root := runpath.PARENT.Path()
 	client := done.VCE(New(root)).Nice()
 
 	if false { //not commit in this test case

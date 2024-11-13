@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/go-xlan/gogitv5acp/internal/utils"
+	"github.com/go-xlan/gogitv5git/internal/utils"
 )
 
 type CommitOptions struct {
@@ -15,20 +15,20 @@ type CommitOptions struct {
 }
 
 func (options *CommitOptions) name() string {
-	return utils.SOrX(options.Name, "gogitv5acp")
+	return utils.SOrX(options.Name, "gogitv5git")
 }
 
 func (options *CommitOptions) emails() string {
-	return utils.SOrX(options.Emails, "gogitv5acp@github.com")
+	return utils.SOrX(options.Emails, "gogitv5git@github.com")
 }
 
-func (options *CommitOptions) message() string {
+func (options *CommitOptions) CmMessage() string {
 	return utils.SOrR(options.Message, func() string {
-		return fmt.Sprintf(`git commit -m "%s %s"`, "gogitv5acp", time.Now().Format("2006-01-02 15:04:05"))
+		return fmt.Sprintf(`git commit -m "%s %s"`, "gogitv5git", time.Now().Format("2006-01-02 15:04:05"))
 	})
 }
 
-func (options *CommitOptions) authors() *object.Signature {
+func (options *CommitOptions) Signature() *object.Signature {
 	return &object.Signature{
 		Name:  options.name(),
 		Email: options.emails(),

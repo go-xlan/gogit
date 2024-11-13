@@ -1,4 +1,4 @@
-package gogitv5acp
+package gogitv5x
 
 import (
 	"github.com/go-git/go-billy/v5/osfs"

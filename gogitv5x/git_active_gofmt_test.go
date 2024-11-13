@@ -1,4 +1,4 @@
-package gogitv5acp
+package gogitv5x
 
 import (
 	"strings"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestNewFmtActiveFilesOptions(t *testing.T) {
-	root := runpath.PARENT.Path()
+	root := runpath.PARENT.Up(1)
 
 	worktree, err := NewWorktreeWithIgnore(root)
 	require.NoError(t, err)

@@ -1,4 +1,4 @@
-package gogitv5acp
+package gogitv5x
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewWorktree(t *testing.T) {
-	worktree, err := NewWorktreeWithIgnore(runpath.PARENT.Path())
+	worktree, err := NewWorktreeWithIgnore(runpath.PARENT.Up(1))
 	require.NoError(t, err)
 
 	status, err := worktree.Status()

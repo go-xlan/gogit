@@ -3,8 +3,8 @@ package gogitv5git
 import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/go-xlan/gogitv5acp"
-	"github.com/go-xlan/gogitv5acp/internal/utils"
+	"github.com/go-xlan/gogitv5git/gogitv5x"
+	"github.com/go-xlan/gogitv5git/internal/utils"
 	"github.com/pkg/errors"
 	"github.com/yyle88/done"
 	"github.com/yyle88/erero"
@@ -18,7 +18,7 @@ type Client struct {
 }
 
 func New(root string) (*Client, error) {
-	repo, worktree, err := gogitv5acp.NewRepoWorktreeWithIgnore(root)
+	repo, worktree, err := gogitv5x.NewRepoWorktreeWithIgnore(root)
 	if err != nil {
 		return nil, erero.Wro(err)
 	}
@@ -48,12 +48,12 @@ func (G *Client) Status() (git.Status, error) {
 }
 
 func (G *Client) Commit(options CommitOptions) (string, error) {
-	msg := options.message()
+	msg := options.CmMessage()
 	zaplog.ZAPS.P1.SUG.Info("commit: ", "msg: ", msg)
 
 	return G.seeCommit(G.worktree.Commit(msg, &git.CommitOptions{
 		All:    true, //是否提交已经删除的东西，通常是true的，毕竟不提交删除的场景，基本是没有的
-		Author: options.authors(),
+		Author: options.Signature(),
 	}))
 }
 
@@ -63,13 +63,13 @@ func (G *Client) CAmend(options CommitOptions) (string, error) {
 		reference := done.VCE(G.repo.Head()).Nice()
 		commit := done.VCE(G.repo.CommitObject(reference.Hash())).Nice()
 		msg = utils.SOrR(commit.Message, func() string {
-			return options.message()
+			return options.CmMessage()
 		})
 	}
 	zaplog.ZAPS.P1.SUG.Info("camend: ", "msg: ", msg)
 
 	return G.seeCommit(G.worktree.Commit(msg, &git.CommitOptions{
-		Author: options.authors(),
+		Author: options.Signature(),
 		Amend:  true, //注意这里有"all and amend cannot be used together"的限制，因此前面的"all"不要设置
 	}))
 }

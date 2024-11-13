@@ -1,4 +1,4 @@
-package gogitv5acp
+package gogitv5x
 
 import (
 	"path/filepath"

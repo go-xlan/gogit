@@ -1,4 +1,4 @@
-package gogitv5acp
+package gogitv5x
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewRepo(t *testing.T) {
-	repo, err := NewRepo(runpath.PARENT.Path())
+	repo, err := NewRepo(runpath.PARENT.Up(1))
 	require.NoError(t, err)
 	tags, err := repo.Tags()
 	require.NoError(t, err)

@@ -1,4 +1,4 @@
-package gogitv5acp
+package gogitv5x
 
 import (
 	"strings"
@@ -12,7 +12,7 @@ import (
 )
 
 func TestGetActiveFiles(t *testing.T) {
-	root := runpath.PARENT.Path()
+	root := runpath.PARENT.Up(1)
 
 	worktree, err := NewWorktreeWithIgnore(root)
 	require.NoError(t, err)
@@ -36,7 +36,7 @@ func TestGetActiveFiles(t *testing.T) {
 }
 
 func TestGetActiveFiles_Execute_GoFormatFile(t *testing.T) {
-	root := runpath.PARENT.Path()
+	root := runpath.PARENT.Up(1)
 
 	worktree, err := NewWorktreeWithIgnore(root)
 	require.NoError(t, err)
@@ -73,7 +73,7 @@ func TestGetActiveFiles_Execute_GoFormatFile(t *testing.T) {
 }
 
 func TestGetActiveFilesOptions_SetRunOnFilePath(t *testing.T) {
-	root := runpath.PARENT.Path()
+	root := runpath.PARENT.Up(1)
 
 	worktree, err := NewWorktreeWithIgnore(root)
 	require.NoError(t, err)
