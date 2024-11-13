@@ -47,17 +47,17 @@ func (G *Client) Status() (git.Status, error) {
 	return status, nil
 }
 
-func (G *Client) Commit(options CommitOptions) (string, error) {
+func (G *Client) CmtAll(options CommitMessage) (string, error) {
 	msg := options.CmMessage()
 	zaplog.ZAPS.P1.SUG.Info("commit: ", "msg: ", msg)
 
-	return G.seeCommit(G.worktree.Commit(msg, &git.CommitOptions{
+	return G.checkCommitHash(G.worktree.Commit(msg, &git.CommitOptions{
 		All:    true, //是否提交已经删除的东西，通常是true的，毕竟不提交删除的场景，基本是没有的
 		Author: options.Signature(),
 	}))
 }
 
-func (G *Client) CAmend(options CommitOptions) (string, error) {
+func (G *Client) CAmend(options CommitMessage) (string, error) {
 	msg := options.Message
 	if msg == "" { //当不填的时候就需要从最新一次的commit里拿到信息，这样才叫追加内容的提交
 		reference := done.VCE(G.repo.Head()).Nice()
@@ -68,13 +68,13 @@ func (G *Client) CAmend(options CommitOptions) (string, error) {
 	}
 	zaplog.ZAPS.P1.SUG.Info("camend: ", "msg: ", msg)
 
-	return G.seeCommit(G.worktree.Commit(msg, &git.CommitOptions{
+	return G.checkCommitHash(G.worktree.Commit(msg, &git.CommitOptions{
 		Author: options.Signature(),
 		Amend:  true, //注意这里有"all and amend cannot be used together"的限制，因此前面的"all"不要设置
 	}))
 }
 
-func (G *Client) seeCommit(commitHash plumbing.Hash, erx error) (string, error) {
+func (G *Client) checkCommitHash(commitHash plumbing.Hash, erx error) (string, error) {
 	if erx != nil {
 		if errors.Is(erx, git.ErrEmptyCommit) {
 			return "", nil

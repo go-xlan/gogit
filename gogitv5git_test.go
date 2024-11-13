@@ -20,7 +20,7 @@ func TestNew(t *testing.T) {
 	t.Log(neatjsons.S(status))
 }
 
-func TestClient_Commit(t *testing.T) {
+func TestClient_CmtAll(t *testing.T) {
 	root := runpath.PARENT.Path()
 	client := done.VCE(New(root)).Nice()
 
@@ -33,7 +33,7 @@ func TestClient_Commit(t *testing.T) {
 
 		t.Log(neatjsons.S(status))
 
-		commitHash, err := client.Commit(CommitOptions{})
+		commitHash, err := client.CmtAll(CommitMessage{})
 		require.NoError(t, err)
 		t.Log(commitHash)
 	}

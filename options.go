@@ -8,30 +8,32 @@ import (
 	"github.com/go-xlan/gogitv5git/internal/utils"
 )
 
-type CommitOptions struct {
+const pkgName = "gogitv5git"
+
+type CommitMessage struct {
 	Name    string
 	Emails  string
 	Message string
 }
 
-func (options *CommitOptions) name() string {
-	return utils.SOrX(options.Name, "gogitv5git")
+func (cmm *CommitMessage) name() string {
+	return utils.SOrX(cmm.Name, pkgName)
 }
 
-func (options *CommitOptions) emails() string {
-	return utils.SOrX(options.Emails, "gogitv5git@github.com")
+func (cmm *CommitMessage) EmailsAtc() string {
+	return utils.SOrX(cmm.Emails, pkgName+"@github.com")
 }
 
-func (options *CommitOptions) CmMessage() string {
-	return utils.SOrR(options.Message, func() string {
-		return fmt.Sprintf(`git commit -m "%s %s"`, "gogitv5git", time.Now().Format("2006-01-02 15:04:05"))
+func (cmm *CommitMessage) CmMessage() string {
+	return utils.SOrR(cmm.Message, func() string {
+		return fmt.Sprintf(`git commit -m "%s %s"`, pkgName, time.Now().Format("2006-01-02 15:04:05"))
 	})
 }
 
-func (options *CommitOptions) Signature() *object.Signature {
+func (cmm *CommitMessage) Signature() *object.Signature {
 	return &object.Signature{
-		Name:  options.name(),
-		Email: options.emails(),
+		Name:  cmm.name(),
+		Email: cmm.EmailsAtc(),
 		When:  time.Now(),
 	}
 }
