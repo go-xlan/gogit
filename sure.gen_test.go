@@ -21,7 +21,7 @@ func TestGen(t *testing.T) {
 	cfg := &sure_cls_gen.Config{
 		GenParam:      param,
 		PkgName:       syntaxgo.CurrentPackageName(),
-		ImportOptions: syntaxgo_ast.NewPackageImportOptions().SetObject(git.Status{}),
+		ImportOptions: syntaxgo_ast.NewPackageImportOptions().SetInferredObject(git.Status{}),
 		SrcPath:       runtestpath.SrcPath(t),
 	}
 	sure_cls_gen.Gen(cfg, Client{})
