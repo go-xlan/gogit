@@ -19,13 +19,13 @@ func (T *Client88Must) Status() (res git.Status) {
 	sure.Must(err1)
 	return res
 }
-func (T *Client88Must) CmtAll(options CommitMessage) (res string) {
-	res, err1 := T.G.CmtAll(options)
+func (T *Client88Must) CommitAll(commitInfo *CommitInfo) (res string) {
+	res, err1 := T.G.CommitAll(commitInfo)
 	sure.Must(err1)
 	return res
 }
-func (T *Client88Must) CAmend(options CommitMessage) (res string) {
-	res, err1 := T.G.CAmend(options)
+func (T *Client88Must) AmendCommit(commitInfo *CommitInfo) (res string) {
+	res, err1 := T.G.AmendCommit(commitInfo)
 	sure.Must(err1)
 	return res
 }

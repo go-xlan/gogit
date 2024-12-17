@@ -13,16 +13,16 @@ import (
 )
 
 func TestGen(t *testing.T) {
-	param := sure_cls_gen.NewGenParam(runpath.PARENT.Path())
-	param.SetSubClassNamePartWords("88")
-	param.SetSubClassNameStyleEnum(sure_cls_gen.STYLE_SUFFIX_CAMELCASE_TYPE)
-	param.SetSureEnum(sure.MUST)
+	param := sure_cls_gen.NewClassGenOptions(runpath.PARENT.Path())
+	param.WithNewClassNameParts("88")
+	param.WithNamingPatternType(sure_cls_gen.STYLE_SUFFIX_CAMELCASE_TYPE)
+	param.MoreErrorHandlingModes(sure.MUST)
 
-	cfg := &sure_cls_gen.Config{
-		GenParam:      param,
-		PkgName:       syntaxgo.CurrentPackageName(),
-		ImportOptions: syntaxgo_ast.NewPackageImportOptions().SetInferredObject(git.Status{}),
-		SrcPath:       runtestpath.SrcPath(t),
+	cfg := &sure_cls_gen.ClassGenConfig{
+		ClassGenOptions: param,
+		PackageName:     syntaxgo.CurrentPackageName(),
+		ImportOptions:   syntaxgo_ast.NewPackageImportOptions().SetInferredObject(git.Status{}),
+		OutputPath:      runtestpath.SrcPath(t),
 	}
-	sure_cls_gen.Gen(cfg, Client{})
+	sure_cls_gen.GenerateClasses(cfg, Client{})
 }

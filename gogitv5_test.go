@@ -1,8 +1,9 @@
-package gogitv5git
+package gogitv5git_test
 
 import (
 	"testing"
 
+	"github.com/go-xlan/gogitv5git"
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
 	"github.com/yyle88/neatjson/neatjsons"
@@ -11,7 +12,7 @@ import (
 
 func TestNew(t *testing.T) {
 	root := runpath.PARENT.Path()
-	client, err := New(root)
+	client, err := gogitv5git.New(root)
 	require.NoError(t, err)
 
 	status, err := client.Status()
@@ -20,9 +21,9 @@ func TestNew(t *testing.T) {
 	t.Log(neatjsons.S(status))
 }
 
-func TestClient_CmtAll(t *testing.T) {
+func TestClient_CommitAll(t *testing.T) {
 	root := runpath.PARENT.Path()
-	client := done.VCE(New(root)).Nice()
+	client := done.VCE(gogitv5git.New(root)).Nice()
 
 	if false { //not commit in this test case
 		err := client.AddAll()
@@ -33,7 +34,7 @@ func TestClient_CmtAll(t *testing.T) {
 
 		t.Log(neatjsons.S(status))
 
-		commitHash, err := client.CmtAll(CommitMessage{})
+		commitHash, err := client.CommitAll(gogitv5git.NewCommitInfo("提交代码"))
 		require.NoError(t, err)
 		t.Log(commitHash)
 	}

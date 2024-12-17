@@ -1,4 +1,4 @@
-package gogitv5x
+package gogitv5ops
 
 import (
 	"github.com/go-git/go-billy/v5/osfs"
@@ -8,12 +8,20 @@ import (
 	"github.com/yyle88/erero"
 )
 
-func NewRepoWorktreeWithIgnore(root string) (repo *git.Repository, worktree *git.Worktree, err error) {
-	repo, err = NewRepo(root)
+func NewRepo(root string) (*git.Repository, error) {
+	repository, err := git.PlainOpen(root)
+	if err != nil {
+		return nil, erero.Wro(err)
+	}
+	return repository, nil
+}
+
+func NewRepoWorktreeWithIgnore(root string) (repository *git.Repository, worktree *git.Worktree, err error) {
+	repository, err = NewRepo(root)
 	if err != nil {
 		return nil, nil, erero.Wro(err)
 	}
-	worktree, err = repo.Worktree()
+	worktree, err = repository.Worktree()
 	if err != nil {
 		return nil, nil, erero.Wro(err)
 	}
@@ -23,15 +31,7 @@ func NewRepoWorktreeWithIgnore(root string) (repo *git.Repository, worktree *git
 	//中等优先级比较常用
 	SetIgnorePatterns(worktree, done.VAE(gitignore.LoadGlobalPatterns(osfs.New("/"))).Done())
 	//最高优先级非常常用
-	SetIgnorePatterns(worktree, done.VAE(GetProjectIgnorePatterns(root)).Done())
+	SetIgnorePatterns(worktree, done.VAE(LoadProjectIgnorePatterns(root)).Done())
 
-	return repo, worktree, nil
-}
-
-func NewWorktreeWithIgnore(root string) (worktree *git.Worktree, err error) {
-	_, worktree, err = NewRepoWorktreeWithIgnore(root)
-	if err != nil {
-		return nil, erero.Wro(err)
-	}
-	return worktree, nil
+	return repository, worktree, nil
 }
