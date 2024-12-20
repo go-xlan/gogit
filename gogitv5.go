@@ -1,9 +1,9 @@
-package gogitv5git
+package gogit
 
 import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/go-xlan/gogitv5git/gogitv5ops"
+	"github.com/go-xlan/gogit/gogitv5ops"
 	"github.com/pkg/errors"
 	"github.com/yyle88/done"
 	"github.com/yyle88/erero"

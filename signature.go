@@ -1,4 +1,4 @@
-package gogitv5git
+package gogit
 
 import (
 	"fmt"
@@ -10,8 +10,8 @@ import (
 	"github.com/yyle88/zaplog"
 )
 
-const packageName = "gogitv5git"
-const packagePath = "github.com/go-xlan/gogitv5git"
+const packageName = "gogit"
+const packagePath = "github.com/go-xlan/gogit"
 
 type CommitInfo struct {
 	Name    string

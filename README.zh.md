@@ -1,6 +1,6 @@
-# gogitv5git
+# gogit
 
-`gogitv5git` 是一个 Go 语言库，用于操作 Git 仓库。该库提供了一些常用的 Git 操作，如添加文件、查看状态、提交更改等。基于 `go-git` 库实现，提供了易于使用的 API 来简化 Git 操作。
+`gogit` 是一个 Go 语言库，用于操作 Git 仓库。该库提供了一些常用的 Git 操作，如添加文件、查看状态、提交更改等。基于 `go-git` 库实现，提供了易于使用的 API 来简化 Git 操作。
 
 ## 说明
 [ENGLISH-README](README.md)
@@ -8,7 +8,7 @@
 ## 安装
 
 ```bash
-go get github.com/go-xlan/gogitv5git
+go get github.com/go-xlan/gogit
 ```
 
 ## 使用
@@ -24,12 +24,12 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/go-xlan/gogitv5git"
+	"github.com/go-xlan/gogit"
 	"github.com/yyle88/done"
 )
 
 func main() {
-	client := done.VPE(gogitv5git.New("/path/to/your/repository")).Nice()
+	client := done.VPE(gogit.New("/path/to/your/repository")).Nice()
 	fmt.Println("Git client initialized!")
 }
 ```
@@ -59,7 +59,7 @@ fmt.Println("Git Status: ", status)
 要提交所有的更改，可以使用 `CmtAll` 方法，您需要传入一个 `CommitMessage` 结构体，该结构体用于定义提交信息和签名。
 
 ```go
-commitMessage := gogitv5git.CommitMessage{
+commitMessage := gogit.CommitMessage{
 	Name:    "Your Name",
 	Emails:  "youremail@example.com",
 	Message: "Your commit message",
@@ -76,7 +76,7 @@ fmt.Println("Commit successful! Commit hash: ", commitHash)
 如果您想修改最新的提交信息，可以使用 `CAmend` 方法：
 
 ```go
-commitMessage := gogitv5git.CommitMessage{
+commitMessage := gogit.CommitMessage{
 	Message: "Amended commit message",
 }
 
@@ -88,7 +88,7 @@ fmt.Println("Amend successful! Commit hash: ", commitHash)
 
 ### 其他功能
 
-`gogitv5git` 还提供了一些其他功能，例如获取提交哈希和日志等。你可以参考源码进行扩展或修改。
+`gogit` 还提供了一些其他功能，例如获取提交哈希和日志等。你可以参考源码进行扩展或修改。
 
 ## 函数说明
 
@@ -122,4 +122,4 @@ MIT License - 参阅 `LICENSE` 文件获取更多信息。
 
 帮我点个星星。谢谢!!!
 
-[![see stars](https://starchart.cc/go-xlan/gogitv5git.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogitv5git)
+[![see stars](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)

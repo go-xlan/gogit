@@ -1,4 +1,4 @@
-# gogitv5git
+# gogit
 use `git add` `git commit` `git push` with "github.com/go-git/go-git/v5".
 
 ## README
@@ -7,7 +7,7 @@ use `git add` `git commit` `git push` with "github.com/go-git/go-git/v5".
 ## Installation
 
 ```bash
-go get github.com/go-xlan/gogitv5git
+go get github.com/go-xlan/gogit
 ```
 
 ## Usage
@@ -23,12 +23,12 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/go-xlan/gogitv5git"
+	"github.com/go-xlan/gogit"
 	"github.com/yyle88/done"
 )
 
 func main() {
-	client := done.VPE(gogitv5git.New("/path/to/your/repository")).Nice()
+	client := done.VPE(gogit.New("/path/to/your/repository")).Nice()
 	fmt.Println("Git client initialized!")
 }
 ```
@@ -58,7 +58,7 @@ fmt.Println("Git Status: ", status)
 To commit all changes, use the `CmtAll` method. You need to provide a `CommitMessage` struct, which defines the commit message and signature.
 
 ```go
-commitMessage := gogitv5git.CommitMessage{
+commitMessage := gogit.CommitMessage{
 	Name:    "Your Name",
 	Emails:  "youremail@example.com",
 	Message: "Your commit message",
@@ -75,7 +75,7 @@ fmt.Println("Commit successful! Commit hash: ", commitHash)
 To amend the latest commit (e.g., to modify the commit message or add more changes), use the `CAmend` method:
 
 ```go
-commitMessage := gogitv5git.CommitMessage{
+commitMessage := gogit.CommitMessage{
 	Message: "Amended commit message",
 }
 
@@ -87,7 +87,7 @@ fmt.Println("Amend successful! Commit hash: ", commitHash)
 
 ### Other Features
 
-`gogitv5git` provides additional functionality such as retrieving commit hashes and logs. Feel free to explore the source code for more advanced features and extensions.
+`gogit` provides additional functionality such as retrieving commit hashes and logs. Feel free to explore the source code for more advanced features and extensions.
 
 ## Function Overview
 
@@ -121,4 +121,4 @@ MIT License - See the `LICENSE` file for more details.
 
 Give me stars. Thank you!!!
 
-[![see stars](https://starchart.cc/go-xlan/gogitv5git.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogitv5git)
+[![see stars](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)

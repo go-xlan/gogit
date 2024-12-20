@@ -1,4 +1,4 @@
-package gogitv5git
+package gogit
 
 import (
 	"testing"

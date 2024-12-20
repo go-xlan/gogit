@@ -1,4 +1,4 @@
-package gogitv5git
+package gogit
 
 import (
 	"github.com/go-git/go-git/v5"

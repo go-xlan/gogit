@@ -1,4 +1,4 @@
-module github.com/go-xlan/gogitv5git
+module github.com/go-xlan/gogit
 
 go 1.22.8
 
@@ -11,13 +11,13 @@ require (
 	github.com/yyle88/erero v1.0.15
 	github.com/yyle88/eroticgo v0.0.2
 	github.com/yyle88/formatgo v1.0.21
-	github.com/yyle88/must v0.0.10
+	github.com/yyle88/must v0.0.11
 	github.com/yyle88/neatjson v0.0.10
 	github.com/yyle88/osexistpath v0.0.13
 	github.com/yyle88/runpath v1.0.22
-	github.com/yyle88/sure v0.0.33
+	github.com/yyle88/sure v0.0.34
 	github.com/yyle88/syntaxgo v0.0.43
-	github.com/yyle88/tern v0.0.3
+	github.com/yyle88/tern v0.0.4
 	github.com/yyle88/zaplog v0.0.16
 	go.uber.org/zap v1.27.0
 )
@@ -47,9 +47,9 @@ require (
 	github.com/yyle88/rese v0.0.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/exp v0.0.0-20241215155358-4a5509556b9e // indirect
+	golang.org/x/exp v0.0.0-20241217172543-b2144cdd0a67 // indirect
 	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/net v0.32.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/tools v0.28.0 // indirect
