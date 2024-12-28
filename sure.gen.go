@@ -24,8 +24,18 @@ func (T *Client88Must) CommitAll(commitInfo *CommitInfo) (res string) {
 	sure.Must(err1)
 	return res
 }
-func (T *Client88Must) AmendCommit(commitInfo *CommitInfo) (res string) {
-	res, err1 := T.G.AmendCommit(commitInfo)
+func (T *Client88Must) AmendCommit(amendConfig *AmendConfig) (res string) {
+	res, err1 := T.G.AmendCommit(amendConfig)
+	sure.Must(err1)
+	return res
+}
+func (T *Client88Must) IsHashMatchedRemote(remoteName string) (res bool) {
+	res, err1 := T.G.IsHashMatchedRemote(remoteName)
+	sure.Must(err1)
+	return res
+}
+func (T *Client88Must) IsPushedToAnyRemote() (res bool) {
+	res, err1 := T.G.IsPushedToAnyRemote()
 	sure.Must(err1)
 	return res
 }

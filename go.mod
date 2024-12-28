@@ -3,22 +3,22 @@ module github.com/go-xlan/gogit
 go 1.22.8
 
 require (
-	github.com/go-git/go-billy/v5 v5.6.0
+	github.com/go-git/go-billy/v5 v5.6.1
 	github.com/go-git/go-git/v5 v5.12.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.10.0
-	github.com/yyle88/done v1.0.18
+	github.com/yyle88/done v1.0.20
 	github.com/yyle88/erero v1.0.15
 	github.com/yyle88/eroticgo v0.0.2
 	github.com/yyle88/formatgo v1.0.21
-	github.com/yyle88/must v0.0.11
+	github.com/yyle88/must v0.0.12
 	github.com/yyle88/neatjson v0.0.10
-	github.com/yyle88/osexistpath v0.0.13
+	github.com/yyle88/osexistpath v0.0.14
 	github.com/yyle88/runpath v1.0.22
 	github.com/yyle88/sure v0.0.34
 	github.com/yyle88/syntaxgo v0.0.43
 	github.com/yyle88/tern v0.0.4
-	github.com/yyle88/zaplog v0.0.16
+	github.com/yyle88/zaplog v0.0.17
 	go.uber.org/zap v1.27.0
 )
 
@@ -42,7 +42,7 @@ require (
 	github.com/sergi/go-diff v1.3.2-0.20230802210424-5b0b94c5c0d3 // indirect
 	github.com/skeema/knownhosts v1.3.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
-	github.com/yyle88/mutexmap v1.0.8 // indirect
+	github.com/yyle88/mutexmap v1.0.9 // indirect
 	github.com/yyle88/printgo v1.0.1 // indirect
 	github.com/yyle88/rese v0.0.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
