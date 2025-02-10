@@ -56,7 +56,7 @@ func (G *Client) Status() (git.Status, error) {
 // CommitAll commits all staged changes with the provided commit information.
 func (G *Client) CommitAll(commitInfo *CommitInfo) (string, error) {
 	message := commitInfo.GetCommitMessage()
-	zaplog.ZAPS.P1.SUG.Info("commit: ", "msg: ", message)
+	zaplog.ZAPS.Skip1.SUG.Info("commit: ", "msg: ", message)
 
 	return G.verifyCommitHash(G.worktree.Commit(message, &git.CommitOptions{
 		All:    true, // Whether to commit deleted files. Usually true, as it's rare to commit without deleting.
@@ -86,7 +86,7 @@ func (G *Client) AmendCommit(amendConfig *AmendConfig) (string, error) {
 			return amendConfig.CommitInfo.GetCommitMessage()
 		})
 	}
-	zaplog.ZAPS.P1.SUG.Info("amend: ", "msg: ", message)
+	zaplog.ZAPS.Skip1.SUG.Info("amend: ", "msg: ", message)
 
 	return G.verifyCommitHash(G.worktree.Commit(message, &git.CommitOptions{
 		Author: amendConfig.CommitInfo.GetObjectSignature(),
@@ -102,13 +102,13 @@ func (G *Client) verifyCommitHash(commitHash plumbing.Hash, err error) (string, 
 		}
 		return "", erero.Wro(err)
 	}
-	zaplog.ZAPS.P2.LOG.Info("commit", zap.String("hash", commitHash.String()))
+	zaplog.ZAPS.Skip2.LOG.Info("commit", zap.String("hash", commitHash.String()))
 
 	commitObject, err := G.repository.CommitObject(commitHash)
 	if err != nil {
 		return "", erero.Wro(err)
 	}
-	zaplog.ZAPS.P2.SUG.Info(commitObject)
+	zaplog.ZAPS.Skip2.SUG.Info(commitObject)
 	return commitHash.String(), nil
 }
 

@@ -105,7 +105,7 @@ func (options *ProcessingOptions) FormatModifiedGoFiles(worktree *git.Worktree) 
 			return nil
 		}
 
-		zaplog.ZAPS.P1.LOG.Info("golang-format-source", zap.String("path", path))
+		zaplog.ZAPS.Skip1.LOG.Info("golang-format-source", zap.String("path", path))
 
 		if err := formatgo.FormatFile(path); err != nil {
 			return erero.Wro(err)
