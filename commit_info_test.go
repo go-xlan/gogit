@@ -12,7 +12,7 @@ import (
 func TestCommitInfo_GetCommitMessage(t *testing.T) {
 	commitInfo := CommitInfo{Message: "example"}
 
-	require.Equal(t, "example", commitInfo.GetCommitMessage())
+	require.Equal(t, "example", commitInfo.BuildCommitMessage())
 }
 
 func TestCommitInfo_GetSignatureInfo(t *testing.T) {
@@ -47,7 +47,7 @@ func TestCommitInfo_CheckFullMessage(t *testing.T) {
 
 	require.Equal(t, "Jane Doe", objectSignature.Name)
 	require.Equal(t, "janedoe@example.com", objectSignature.Email)
-	require.Equal(t, "example", commitInfo.GetCommitMessage())
+	require.Equal(t, "example", commitInfo.BuildCommitMessage())
 
 	t.Log(neatjsons.S(objectSignature))
 }
@@ -55,13 +55,13 @@ func TestCommitInfo_CheckFullMessage(t *testing.T) {
 func TestCommitInfo_CheckNoneMessage(t *testing.T) {
 	commitInfo := CommitInfo{}
 
-	t.Log(commitInfo.GetCommitMessage())
+	t.Log(commitInfo.BuildCommitMessage())
 
 	objectSignature := commitInfo.GetObjectSignature()
 
 	require.Equal(t, "gogit", objectSignature.Name)
 	require.Equal(t, "gogit@github.com/go-xlan/gogit", objectSignature.Email)
-	require.Contains(t, commitInfo.GetCommitMessage(), packagePath)
+	require.Contains(t, commitInfo.BuildCommitMessage(), packagePath)
 
 	t.Log(neatjsons.S(objectSignature))
 }

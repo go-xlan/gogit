@@ -44,7 +44,7 @@ func (c *CommitInfo) WithMessage(message string) *CommitInfo {
 	return c
 }
 
-func (c *CommitInfo) GetCommitMessage() string {
+func (c *CommitInfo) BuildCommitMessage() string {
 	return zerotern.VF(c.Message, func() string {
 		message := fmt.Sprintf(`git commit -m "[%s](%s) %s"`, packageName, packagePath, time.Now().Format("2006-01-02 15:04:05"))
 		zaplog.SUG.Debugln(eroticgo.BLUE.Sprint(fmt.Sprintf(`git commit -m "%s"`, message)))

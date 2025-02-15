@@ -25,11 +25,10 @@ import (
 	"log"
 
 	"github.com/go-xlan/gogit"
-	"github.com/yyle88/done"
 )
 
 func main() {
-	client := done.VPE(gogit.New("/path/to/your/repository")).Nice()
+	client := gogit.MustNew("/path/to/your/repository")
 	fmt.Println("Git client initialized!")
 }
 ```
@@ -56,16 +55,16 @@ fmt.Println("Git Status: ", status)
 
 ### 提交更改
 
-要提交所有的更改，可以使用 `CmtAll` 方法，您需要传入一个 `CommitMessage` 结构体，该结构体用于定义提交信息和签名。
+要提交所有的更改，可以使用 `CommitAll` 方法，您需要传入一个 `CommitInfo` 结构体，该结构体用于定义提交信息和签名。
 
 ```go
-commitMessage := gogit.CommitMessage{
+commitInfo := gogit.CommitInfo{
 	Name:    "Your Name",
-	Emails:  "youremail@example.com",
+	Eddress:  "youremail@example.com",
 	Message: "Your commit message",
 }
 
-commitHash, err := client.CmtAll(commitMessage)
+commitHash, err := client.CommitAll(commitInfo)
 done.Done(err)
 
 fmt.Println("Commit successful! Commit hash: ", commitHash)
@@ -73,14 +72,14 @@ fmt.Println("Commit successful! Commit hash: ", commitHash)
 
 ### 修改最新提交（Amend）
 
-如果您想修改最新的提交信息，可以使用 `CAmend` 方法：
+如果您想修改最新的提交信息，可以使用 `AmendCommit` 方法：
 
 ```go
-commitMessage := gogit.CommitMessage{
-	Message: "Amended commit message",
+amendConfig := gogit.AmendConfig{
+	//message
 }
 
-commitHash, err := client.CAmend(commitMessage)
+commitHash, err := client.AmendCommit(amendConfig)
 done.Done(err)
 
 fmt.Println("Amend successful! Commit hash: ", commitHash)
@@ -101,10 +100,10 @@ fmt.Println("Amend successful! Commit hash: ", commitHash)
 - **`Status() (git.Status, error)`**  
   获取当前工作区的状态。
 
-- **`CmtAll(options CommitMessage) (string, error)`**  
-  提交所有更改，并使用提供的 `CommitMessage` 生成提交信息。
+- **`CommitAll(options CommitInfo) (string, error)`**  
+  提交所有更改，并使用提供的 `CommitInfo` 生成提交信息。
 
-- **`CAmend(options CommitMessage) (string, error)`**  
+- **`AmendCommit(options AmendConfig) (string, error)`**  
   修改最近的一次提交（使用 `--amend` 标志），并且支持为空的提交信息从最近的提交中获取。
 
 ## 贡献
@@ -122,4 +121,4 @@ MIT License - 参阅 `LICENSE` 文件获取更多信息。
 
 帮我点个星星。谢谢!!!
 
-[![see stars](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)
+[![starring](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)

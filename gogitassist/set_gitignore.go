@@ -1,4 +1,4 @@
-package gogitv5ops
+package gogitassist
 
 import (
 	"os"

@@ -24,11 +24,10 @@ import (
 	"log"
 
 	"github.com/go-xlan/gogit"
-	"github.com/yyle88/done"
 )
 
 func main() {
-	client := done.VPE(gogit.New("/path/to/your/repository")).Nice()
+	client := gogit.MustNew("/path/to/your/repository")
 	fmt.Println("Git client initialized!")
 }
 ```
@@ -55,16 +54,16 @@ fmt.Println("Git Status: ", status)
 
 ### Committing Changes
 
-To commit all changes, use the `CmtAll` method. You need to provide a `CommitMessage` struct, which defines the commit message and signature.
+To commit all changes, use the `CommitAll` method. You need to provide a `CommitInfo` struct, which defines the commit message and signature.
 
 ```go
-commitMessage := gogit.CommitMessage{
+commitInfo := gogit.CommitInfo{
 	Name:    "Your Name",
-	Emails:  "youremail@example.com",
+	Eddress:  "youremail@example.com",
 	Message: "Your commit message",
 }
 
-commitHash, err := client.CmtAll(commitMessage)
+commitHash, err := client.CommitAll(commitInfo)
 done.Done(err)
 
 fmt.Println("Commit successful! Commit hash: ", commitHash)
@@ -72,14 +71,14 @@ fmt.Println("Commit successful! Commit hash: ", commitHash)
 
 ### Amending the Latest Commit
 
-To amend the latest commit (e.g., to modify the commit message or add more changes), use the `CAmend` method:
+To amend the latest commit (e.g., to modify the commit message or add more changes), use the `AmendCommit` method:
 
 ```go
-commitMessage := gogit.CommitMessage{
-	Message: "Amended commit message",
+amendConfig := gogit.AmendConfig{
+	//message
 }
 
-commitHash, err := client.CAmend(commitMessage)
+commitHash, err := client.AmendCommit(amendConfig)
 done.Done(err)
 
 fmt.Println("Amend successful! Commit hash: ", commitHash)
@@ -100,10 +99,10 @@ fmt.Println("Amend successful! Commit hash: ", commitHash)
 - **`Status() (git.Status, error)`**  
   Returns the current status of the working tree.
 
-- **`CmtAll(options CommitMessage) (string, error)`**  
-  Commits all changes with the provided `CommitMessage` for the commit's author and message.
+- **`CommitAll(options CommitInfo) (string, error)`**  
+  Commits all changes with the provided `CommitInfo` for the commit's author and message.
 
-- **`CAmend(options CommitMessage) (string, error)`**  
+- **`AmendCommit(options AmendConfig) (string, error)`**  
   Amends the latest commit with the provided commit message or adds new changes. The commit is amended using the `--amend` flag.
 
 ## Contributing
@@ -121,4 +120,4 @@ MIT License - See the `LICENSE` file for more details.
 
 Give me stars. Thank you!!!
 
-[![see stars](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)
+[![starring](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)

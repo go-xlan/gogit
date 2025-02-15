@@ -10,6 +10,14 @@ type Client88Must struct{ G *Client }
 func (G *Client) Must() *Client88Must {
 	return &Client88Must{G: G}
 }
+func (T *Client88Must) Repo() (res *git.Repository) {
+	res = T.G.Repo()
+	return res
+}
+func (T *Client88Must) Tree() (res *git.Worktree) {
+	res = T.G.Tree()
+	return res
+}
 func (T *Client88Must) AddAll() {
 	err := T.G.AddAll()
 	sure.Must(err)
@@ -19,23 +27,23 @@ func (T *Client88Must) Status() (res git.Status) {
 	sure.Must(err1)
 	return res
 }
-func (T *Client88Must) CommitAll(commitInfo *CommitInfo) (res string) {
-	res, err1 := T.G.CommitAll(commitInfo)
+func (T *Client88Must) CommitAll(info *CommitInfo) (res string) {
+	res, err1 := T.G.CommitAll(info)
 	sure.Must(err1)
 	return res
 }
-func (T *Client88Must) AmendCommit(amendConfig *AmendConfig) (res string) {
-	res, err1 := T.G.AmendCommit(amendConfig)
+func (T *Client88Must) AmendCommit(cfg *AmendConfig) (res string) {
+	res, err1 := T.G.AmendCommit(cfg)
 	sure.Must(err1)
 	return res
 }
-func (T *Client88Must) IsHashMatchedRemote(remoteName string) (res bool) {
-	res, err1 := T.G.IsHashMatchedRemote(remoteName)
+func (T *Client88Must) IsLatestCommitPushedToRemote(remoteName string) (res bool) {
+	res, err1 := T.G.IsLatestCommitPushedToRemote(remoteName)
 	sure.Must(err1)
 	return res
 }
-func (T *Client88Must) IsPushedToAnyRemote() (res bool) {
-	res, err1 := T.G.IsPushedToAnyRemote()
+func (T *Client88Must) IsLatestCommitPushed() (res bool) {
+	res, err1 := T.G.IsLatestCommitPushed()
 	sure.Must(err1)
 	return res
 }

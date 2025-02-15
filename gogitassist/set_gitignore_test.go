@@ -1,8 +1,9 @@
-package gogitv5ops
+package gogitassist_test
 
 import (
 	"testing"
 
+	"github.com/go-xlan/gogit/gogitassist"
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/runpath"
 )
@@ -10,7 +11,7 @@ import (
 func TestLoadProjectIgnorePatterns(t *testing.T) {
 	root := runpath.PARENT.Up(1)
 
-	patterns, err := LoadProjectIgnorePatterns(root)
+	patterns, err := gogitassist.LoadProjectIgnorePatterns(root)
 	require.NoError(t, err)
 	require.NotEmpty(t, patterns)
 
@@ -20,7 +21,7 @@ func TestLoadProjectIgnorePatterns(t *testing.T) {
 func TestLoadIgnorePatternsFromPath(t *testing.T) {
 	path := runpath.PARENT.UpTo(1, ".gitignore")
 
-	patterns, err := LoadIgnorePatternsFromPath(path)
+	patterns, err := gogitassist.LoadIgnorePatternsFromPath(path)
 	require.NoError(t, err)
 	require.NotEmpty(t, patterns)
 
