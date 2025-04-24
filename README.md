@@ -114,10 +114,12 @@ Contributions are welcome! If you'd like to help improve this project, please fe
 
 ## License
 
-MIT License - See the `LICENSE` file for more details.
+MIT License. See [LICENSE](LICENSE).
 
 ## Thank you
 
 Give me stars. Thank you!!!
+
+## GitHub Stars
 
 [![starring](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)

@@ -115,10 +115,12 @@ fmt.Println("Amend successful! Commit hash: ", commitHash)
 
 ## 许可证
 
-MIT License - 参阅 `LICENSE` 文件获取更多信息。
+项目采用 MIT 许可证，详情请参阅 [LICENSE](LICENSE)。
 
 ## 谢谢
 
 帮我点个星星。谢谢!!!
+
+## 得星
 
 [![starring](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)
