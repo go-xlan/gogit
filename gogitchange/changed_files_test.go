@@ -7,6 +7,8 @@ import (
 	"github.com/go-xlan/gogit/gogitassist"
 	"github.com/go-xlan/gogit/gogitchange"
 	"github.com/stretchr/testify/require"
+	"github.com/yyle88/erero"
+	"github.com/yyle88/formatgo"
 	"github.com/yyle88/neatjson/neatjsons"
 	"github.com/yyle88/runpath"
 )
@@ -39,6 +41,21 @@ func TestListChangedFilePaths_Golang(t *testing.T) {
 	t.Log(neatjsons.S(paths))
 }
 
+func TestForeachChangedGoFile(t *testing.T) {
+	projectRoot := runpath.PARENT.Up(1)
+
+	repo, tree, err := gogitassist.NewRepoTreeWithIgnore(projectRoot)
+	require.NoError(t, err)
+	gogitassist.DebugRepo(repo)
+
+	manager := gogitchange.NewChangedFileManager(projectRoot, tree)
+	options := gogitchange.NewMatchOptions().MatchType(".go")
+	require.NoError(t, manager.ForeachChangedGoFile(options, func(path string) error {
+		t.Log("path:", path)
+		return nil
+	}))
+}
+
 func TestFormatChangedGoFiles(t *testing.T) {
 	projectRoot := runpath.PARENT.Up(1)
 
@@ -60,5 +77,12 @@ func TestFormatChangedGoFiles(t *testing.T) {
 		t.Log("pass:", path)
 		return true
 	})
-	require.NoError(t, manager.FormatChangedGoFiles(options))
+	require.NoError(t, manager.ForeachChangedGoFile(options, func(path string) error {
+		t.Log("golang-format-source-file-path:", path)
+
+		if err := formatgo.FormatFile(path); err != nil {
+			return erero.Wro(err)
+		}
+		return nil
+	}))
 }

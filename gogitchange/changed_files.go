@@ -5,12 +5,9 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/yyle88/erero"
-	"github.com/yyle88/formatgo"
 	"github.com/yyle88/must"
 	"github.com/yyle88/osexistpath/osmustexist"
 	"github.com/yyle88/osexistpath/ossoftexist"
-	"github.com/yyle88/zaplog"
-	"go.uber.org/zap"
 )
 
 type ChangedFileManager struct {
@@ -73,14 +70,18 @@ func (m *ChangedFileManager) ListChangedFilePaths(matchOptions *MatchOptions) ([
 	return paths, nil
 }
 
-func (m *ChangedFileManager) FormatChangedGoFiles(matchOptions *MatchOptions) error {
+// FormatChangedGoFiles 格式化所有变化的 Go 代码文件。(该功能已经移到别的模块里)
+// func (m *ChangedFileManager) FormatChangedGoFiles(matchOptions *MatchOptions) error {
+// code move to -> https://github.com/go-mate/go-commit
+// }
+
+// ForeachChangedGoFile 遍历所有变化的 Go 代码文件，再对每个文件执行指定的处理函数
+func (m *ChangedFileManager) ForeachChangedGoFile(matchOptions *MatchOptions, process func(path string) error) error {
 	if err := m.Foreach(matchOptions, func(path string) error {
 		if filepath.Ext(path) != ".go" {
 			return nil
 		}
-		zaplog.ZAPS.Skip1.LOG.Info("golang-format-source", zap.String("path", path))
-
-		if err := formatgo.FormatFile(path); err != nil {
+		if err := process(path); err != nil {
 			return erero.Wro(err)
 		}
 		return nil
