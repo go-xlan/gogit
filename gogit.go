@@ -10,7 +10,6 @@ import (
 	"github.com/yyle88/done"
 	"github.com/yyle88/erero"
 	"github.com/yyle88/must"
-	"github.com/yyle88/rese"
 	"github.com/yyle88/tern/zerotern"
 	"github.com/yyle88/zaplog"
 	"go.uber.org/zap"
@@ -35,10 +34,6 @@ func New(root string) (*Client, error) {
 	}
 	client := NewClient(repo, tree)
 	return client, nil
-}
-
-func MustNew(root string) *Client {
-	return rese.P1(New(root))
 }
 
 func (G *Client) Repo() *git.Repository {

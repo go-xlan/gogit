@@ -7,6 +7,7 @@ import (
 	"github.com/go-xlan/gogit/gogitassist"
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/neatjson/neatjsons"
+	"github.com/yyle88/rese"
 	"github.com/yyle88/runpath"
 )
 
@@ -21,8 +22,8 @@ func TestNew(t *testing.T) {
 	t.Log(neatjsons.S(status))
 }
 
-func TestMustNew(t *testing.T) {
-	client := gogit.MustNew(runpath.PARENT.Path())
+func TestNewClient(t *testing.T) {
+	client := rese.P1(gogit.New(runpath.PARENT.Path()))
 	gogitassist.DebugRepo(client.Repo())
 
 	status, err := client.Status()

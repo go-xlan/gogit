@@ -25,8 +25,8 @@ func NewChangedFileManager(projectPath string, worktree *git.Worktree) *ChangedF
 	}
 }
 
-// Walk 找到变化的文件（除了删除的）把变动的文件格式化再提交
-func (m *ChangedFileManager) Walk(options *Options, process func(path string) error) error {
+// Foreach 找到变化的文件（除了删除的）把变动的文件格式化再提交
+func (m *ChangedFileManager) Foreach(matchOptions *MatchOptions, process func(path string) error) error {
 	statusMap, err := m.tree.Status()
 	if err != nil {
 		return erero.Wro(err)
@@ -39,12 +39,12 @@ func (m *ChangedFileManager) Walk(options *Options, process func(path string) er
 		}
 
 		// 过滤掉扩展名不匹配的
-		if options.matchType != "" && filepath.Ext(relativePath) != options.matchType {
+		if matchOptions.matchType != "" && filepath.Ext(relativePath) != matchOptions.matchType {
 			continue
 		}
 
 		// 当需要过滤路径时，就可以通过这个函数过滤，把不需要处理的路径排除掉
-		if options.matchPath != nil && !options.matchPath(filepath.Join(m.projectPath, relativePath)) {
+		if matchOptions.matchPath != nil && !matchOptions.matchPath(filepath.Join(m.projectPath, relativePath)) {
 			continue
 		}
 
@@ -62,9 +62,9 @@ func (m *ChangedFileManager) Walk(options *Options, process func(path string) er
 	return nil
 }
 
-func (m *ChangedFileManager) ListChangedFilePaths(options *Options) ([]string, error) {
+func (m *ChangedFileManager) ListChangedFilePaths(matchOptions *MatchOptions) ([]string, error) {
 	var paths = make([]string, 0)
-	if err := m.Walk(options, func(path string) error {
+	if err := m.Foreach(matchOptions, func(path string) error {
 		paths = append(paths, path)
 		return nil
 	}); err != nil {
@@ -73,8 +73,8 @@ func (m *ChangedFileManager) ListChangedFilePaths(options *Options) ([]string, e
 	return paths, nil
 }
 
-func (m *ChangedFileManager) FormatChangedGoFiles(options *Options) error {
-	if err := m.Walk(options, func(path string) error {
+func (m *ChangedFileManager) FormatChangedGoFiles(matchOptions *MatchOptions) error {
+	if err := m.Foreach(matchOptions, func(path string) error {
 		if filepath.Ext(path) != ".go" {
 			return nil
 		}

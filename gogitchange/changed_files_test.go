@@ -19,7 +19,7 @@ func TestListChangedFilePaths_Markdown(t *testing.T) {
 	gogitassist.DebugRepo(repo)
 
 	manager := gogitchange.NewChangedFileManager(root, tree)
-	options := gogitchange.NewOptions().MatchType(".md")
+	options := gogitchange.NewMatchOptions().MatchType(".md")
 	paths, err := manager.ListChangedFilePaths(options)
 	require.NoError(t, err)
 	t.Log(neatjsons.S(paths))
@@ -33,7 +33,7 @@ func TestListChangedFilePaths_Golang(t *testing.T) {
 	gogitassist.DebugRepo(repo)
 
 	manager := gogitchange.NewChangedFileManager(root, tree)
-	options := gogitchange.NewOptions().MatchType(".go")
+	options := gogitchange.NewMatchOptions().MatchType(".go")
 	paths, err := manager.ListChangedFilePaths(options)
 	require.NoError(t, err)
 	t.Log(neatjsons.S(paths))
@@ -47,7 +47,7 @@ func TestFormatChangedGoFiles(t *testing.T) {
 	gogitassist.DebugRepo(repo)
 
 	manager := gogitchange.NewChangedFileManager(projectRoot, tree)
-	options := gogitchange.NewOptions().MatchType(".go").MatchPath(func(path string) bool {
+	options := gogitchange.NewMatchOptions().MatchType(".go").MatchPath(func(path string) bool {
 		t.Log("path:", path)
 
 		if strings.HasSuffix(path, ".pb.go") || //skip the pb code
