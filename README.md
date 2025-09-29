@@ -1,8 +1,25 @@
-# gogit
-use `git add` `git commit` `git push` with "github.com/go-git/go-git/v5".
+[![GoDoc](https://pkg.go.dev/badge/github.com/go-xlan/gogit)](https://pkg.go.dev/github.com/go-xlan/gogit)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-xlan/gogit)](https://goreportcard.com/report/github.com/go-xlan/gogit)
 
-## README
+# gogit
+
+Enhanced Git operations toolkit providing streamlined repo management with comprehensive commit and remote sync capabilities.
+
+---
+
+<!-- TEMPLATE (EN) BEGIN: LANGUAGE NAVIGATION -->
+## CHINESE README
+
 [中文说明](README.zh.md)
+<!-- TEMPLATE (EN) END: LANGUAGE NAVIGATION -->
+
+## Core Features
+
+🎯 **Streamlined Git Operations**: Intelligent staging, committing, and status checking with comprehensive API
+⚡ **Smart Commit Management**: Auto staging with commit and amend support, prevents unsafe operations
+🔄 **Remote Push Detection**: Automatic checking of commit push status across multiple remotes
+🌍 **Cross-Platform Support**: Pure Go implementation without CLI dependencies using go-git foundation
+📋 **Fluent API Design**: Builder pattern for convenient configuration and method chaining
 
 ## Installation
 
@@ -10,140 +27,233 @@ use `git add` `git commit` `git push` with "github.com/go-git/go-git/v5".
 go get github.com/go-xlan/gogit
 ```
 
-## Usage
+## Quick Start
 
-### Initializing the Git Client
-
-First, create a new Git client instance by calling the `New` function with the repository's root directory:
+### Basic Usage
 
 ```go
 package main
 
 import (
-	"fmt"
-	"log"
+    "fmt"
+    "log"
 
-	"github.com/go-xlan/gogit"
+    "github.com/go-xlan/gogit"
 )
 
 func main() {
-	client, _ := gogit.New("/path/to/your/repository")
-	fmt.Println("OK!")
+    // Initialize Git client
+    client, err := gogit.New("/path/to/your/repo")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Stage all changes
+    err = client.AddAll()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Create commit info with fluent API
+    commitInfo := gogit.NewCommitInfo("Initial commit").
+        WithName("Your Name").
+        WithMailbox("your.email@example.com")
+
+    // Commit changes
+    hash, err := client.CommitAll(commitInfo)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Printf("Commit created: %s\n", hash)
 }
 ```
 
-### Adding All Changes
-
-To add all changes (including deletions) to the Git index (staging area), use the `AddAll` method:
+### Advanced Features
 
 ```go
-err := client.AddAll()
-done.Done(err)
-```
-
-### Viewing Git Status
-
-To view the current status of the working tree, use the `Status` method:
-
-```go
+// Check repository status
 status, err := client.Status()
-done.Done(err)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Repository status: %+v\n", status)
 
-fmt.Println("Git Status: ", status)
-```
-
-### Committing Changes
-
-To commit all changes, use the `CommitAll` method. You need to provide a `CommitInfo` struct, which defines the commit message and signature.
-
-```go
-commitInfo := gogit.CommitInfo{
-	Name:    "Your Name",
-	Eddress:  "youremail@example.com",
-	Message: "Your commit message",
+// Amend last commit (with safety check)
+amendConfig := &gogit.AmendConfig{
+    CommitInfo: gogit.NewCommitInfo("Updated commit message").
+        WithName("Updated Name").
+        WithMailbox("updated.email@example.com"),
+    ForceAmend: false, // Prevents amending pushed commits
 }
 
-commitHash, err := client.CommitAll(commitInfo)
-done.Done(err)
+hash, err := client.AmendCommit(amendConfig)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Amended commit: %s\n", hash)
 
-fmt.Println("Commit successful! Commit hash: ", commitHash)
+// Check if latest commit was pushed to remote
+pushed, err := client.IsLatestCommitPushed()
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Latest commit pushed: %t\n", pushed)
 ```
 
-### Amending the Latest Commit
+## API Reference
 
-To amend the latest commit (e.g., to modify the commit message or add more changes), use the `AmendCommit` method:
+### Core Methods
+
+- **`gogit.New(root string) (*Client, error)`**
+  Creates a new Git client for the specified repo path with ignore file support
+
+- **`client.AddAll() error`**
+  Stages all changes including new files, modifications, and deletions
+
+- **`client.Status() (git.Status, error)`**
+  Returns current worktree status with comprehensive file change info
+
+- **`client.CommitAll(info *CommitInfo) (string, error)`**
+  Commits all staged changes with provided creator signature and message
+
+- **`client.AmendCommit(cfg *AmendConfig) (string, error)`**
+  Amends the last commit with safety checks for pushed commits
+
+- **`client.IsLatestCommitPushed() (bool, error)`**
+  Checks if current branch has been pushed to any configured remote
+
+- **`client.IsLatestCommitPushedToRemote(name string) (bool, error)`**
+  Checks push status against a specific remote repo
+
+### Configuration Types
 
 ```go
-amendConfig := gogit.AmendConfig{
-	//message
+// CommitInfo - Fluent commit configuration
+type CommitInfo struct {
+    Name    string // Creator name for Git commits
+    Mailbox string // Creator mailbox for Git commits
+    Message string // Commit message content
 }
 
-commitHash, err := client.AmendCommit(amendConfig)
-done.Done(err)
-
-fmt.Println("Amend successful! Commit hash: ", commitHash)
+// AmendConfig - Amend operation configuration
+type AmendConfig struct {
+    CommitInfo *CommitInfo // New commit info for amend operation
+    ForceAmend bool        // Allow amend even if commit was pushed
+}
 ```
 
-### Other Features
+### Fluent API Examples
 
-`gogit` provides additional functionality such as retrieving commit hashes and logs. Feel free to explore the source code for more advanced features and extensions.
+```go
+// Create commit info with method chaining
+commitInfo := gogit.NewCommitInfo("Feature implementation").
+    WithName("Developer Name").
+    WithMailbox("dev@company.com")
 
-## Function Overview
+// Use default message generation if no message provided
+commitInfo := gogit.NewCommitInfo("").
+    WithName("Auto User").
+    WithMailbox("auto@example.com")
+// Generates timestamp-based message: "[gogit](github.com/go-xlan/gogit) 2024-01-15 14:30:45"
+```
 
-- **`New(root string) (*Client, error)`**  
-  Initializes and returns a new `Client` instance for interacting with the Git repository located at the specified path.
+## Safety Features
 
-- **`AddAll() error`**  
-  Adds all changes (including deletions) to the Git index (staging area).
+- **Push Detection**: Prevents amending commits that have been pushed to remote repos
+- **Ignore File Support**: Respects .gitignore patterns during operations
+- **Empty Commit Handling**: Returns empty string for no-change commits
+- **Error Context**: Comprehensive error wrapping with context info
+- **Hash Verification**: Validates commit integrity after operations
 
-- **`Status() (git.Status, error)`**  
-  Returns the current status of the working tree.
+## Best Practices
 
-- **`CommitAll(options CommitInfo) (string, error)`**  
-  Commits all changes with the provided `CommitInfo` for the commit's author and message.
+```go
+// Always check for errors
+client, err := gogit.New("/path/to/repo")
+if err != nil {
+    return fmt.Errorf("failed to create client: %w", err)
+}
 
-- **`AmendCommit(options AmendConfig) (string, error)`**  
-  Amends the latest commit with the provided commit message or adds new changes. The commit is amended using the `--amend` flag.
+// Use fluent API for clean configuration
+info := gogit.NewCommitInfo("Fix critical bug").
+    WithName("Bug Fixer").
+    WithMailbox("fixer@company.com")
 
----
+// Check push status before amending
+if pushed, _ := client.IsLatestCommitPushed(); pushed {
+    log.Println("Warning: Cannot amend pushed commit")
+} else {
+    // Safe to amend
+    hash, err := client.AmendCommit(&gogit.AmendConfig{
+        CommitInfo: info,
+        ForceAmend: false,
+    })
+}
+```
 
-## License
+<!-- TEMPLATE (EN) BEGIN: STANDARD PROJECT FOOTER -->
+<!-- VERSION 2025-09-26 07:39:27.188023 +0000 UTC -->
+
+## 📄 License
 
 MIT License. See [LICENSE](LICENSE).
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! To contribute:
+Contributions are welcome! Report bugs, suggest features, and contribute code:
 
-1. Fork the repo on GitHub (using the webpage interface).
-2. Clone the forked project (`git clone https://github.com/yourname/repo-name.git`).
-3. Navigate to the cloned project (`cd repo-name`)
-4. Create a feature branch (`git checkout -b feature/xxx`).
-5. Stage changes (`git add .`)
-6. Commit changes (`git commit -m "Add feature xxx"`).
-7. Push to the branch (`git push origin feature/xxx`).
-8. Open a pull request on GitHub (on the GitHub webpage).
+- 🐛 **Found a mistake?** Open an issue on GitHub with reproduction steps
+- 💡 **Have a feature idea?** Create an issue to discuss the suggestion
+- 📖 **Documentation confusing?** Report it so we can improve
+- 🚀 **Need new features?** Share the use cases to help us understand requirements
+- ⚡ **Performance issue?** Help us optimize through reporting slow operations
+- 🔧 **Configuration problem?** Ask questions about complex setups
+- 📢 **Follow project progress?** Watch the repo to get new releases and features
+- 🌟 **Success stories?** Share how this package improved the workflow
+- 💬 **Feedback?** We welcome suggestions and comments
+
+---
+
+## 🔧 Development
+
+New code contributions, follow this process:
+
+1. **Fork**: Fork the repo on GitHub (using the webpage UI).
+2. **Clone**: Clone the forked project (`git clone https://github.com/yourname/repo-name.git`).
+3. **Navigate**: Navigate to the cloned project (`cd repo-name`)
+4. **Branch**: Create a feature branch (`git checkout -b feature/xxx`).
+5. **Code**: Implement the changes with comprehensive tests
+6. **Testing**: (Golang project) Ensure tests pass (`go test ./...`) and follow Go code style conventions
+7. **Documentation**: Update documentation to support client-facing changes and use significant commit messages
+8. **Stage**: Stage changes (`git add .`)
+9. **Commit**: Commit changes (`git commit -m "Add feature xxx"`) ensuring backward compatible code
+10. **Push**: Push to the branch (`git push origin feature/xxx`).
+11. **PR**: Open a merge request on GitHub (on the GitHub webpage) with detailed description.
 
 Please ensure tests pass and include relevant documentation updates.
 
 ---
 
-## Support
+## 🌟 Support
 
-Welcome to contribute to this project by submitting pull requests and reporting issues.
+Welcome to contribute to this project via submitting merge requests and reporting issues.
 
-If you find this package valuable, give me some stars on GitHub! Thank you!!!
+**Project Support:**
 
-**Thank you for your support!**
+- ⭐ **Give GitHub stars** if this project helps you
+- 🤝 **Share with teammates** and (golang) programming friends
+- 📝 **Write tech blogs** about development tools and workflows - we provide content writing support
+- 🌟 **Join the ecosystem** - committed to supporting open source and the (golang) development scene
 
-**Happy Coding with this package!** 🎉
+**Have Fun Coding with this package!** 🎉🎉🎉
 
-Give me stars. Thank you!!!
+<!-- TEMPLATE (EN) END: STANDARD PROJECT FOOTER -->
 
 ---
 
 ## GitHub Stars
 
-[![starring](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)
+[![Stargazers](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)

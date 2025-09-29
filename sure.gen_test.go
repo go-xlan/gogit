@@ -12,6 +12,13 @@ import (
 	"github.com/yyle88/syntaxgo/syntaxgo_ast"
 )
 
+// TestGen generates Must support classes for Client using sure package
+// Creates error-free API wrappers with automatic error handling patterns
+// Generated code provides panic-based alternatives to error-returning methods
+//
+// TestGen 使用 sure 库为 Client 生成 Must 包装器类
+// 创建带自动错误处理模式的无错误 API 包装器
+// 生成的代码提供基于 panic 的替代方法来替代返回错误的方法
 func TestGen(t *testing.T) {
 	param := sure_cls_gen.NewClassGenOptions(runpath.PARENT.Path())
 	param.WithNewClassNameParts("88")

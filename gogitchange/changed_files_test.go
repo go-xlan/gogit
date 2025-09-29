@@ -13,6 +13,11 @@ import (
 	"github.com/yyle88/runpath"
 )
 
+// TestListChangedFilePaths_Markdown tests listing changed Markdown files
+// Verifies file path collection for .md files using type matching
+//
+// TestListChangedFilePaths_Markdown 测试列出变更的 Markdown 文件
+// 使用类型匹配验证 .md 文件的文件路径收集
 func TestListChangedFilePaths_Markdown(t *testing.T) {
 	root := runpath.PARENT.Up(1)
 
@@ -27,6 +32,11 @@ func TestListChangedFilePaths_Markdown(t *testing.T) {
 	t.Log(neatjsons.S(paths))
 }
 
+// TestListChangedFilePaths_Golang tests listing changed Go source files
+// Verifies file path collection for .go files using type matching
+//
+// TestListChangedFilePaths_Golang 测试列出变更的 Go 源文件
+// 使用类型匹配验证 .go 文件的文件路径收集
 func TestListChangedFilePaths_Golang(t *testing.T) {
 	root := runpath.PARENT.Up(1)
 
@@ -41,6 +51,11 @@ func TestListChangedFilePaths_Golang(t *testing.T) {
 	t.Log(neatjsons.S(paths))
 }
 
+// TestForeachChangedGoFile tests iteration through changed Go files
+// Verifies callback execution for each changed .go file
+//
+// TestForeachChangedGoFile 测试遍历变更的 Go 文件
+// 验证对每个变更的 .go 文件执行回调
 func TestForeachChangedGoFile(t *testing.T) {
 	projectRoot := runpath.PARENT.Up(1)
 
@@ -56,6 +71,11 @@ func TestForeachChangedGoFile(t *testing.T) {
 	}))
 }
 
+// TestFormatChangedGoFiles tests Go file formatting with advanced filtering
+// Verifies formatgo integration with custom path matching and exclusion patterns
+//
+// TestFormatChangedGoFiles 测试带高级过滤的 Go 文件格式化
+// 验证 formatgo 集成以及自定义路径匹配和排除模式
 func TestFormatChangedGoFiles(t *testing.T) {
 	projectRoot := runpath.PARENT.Up(1)
 
@@ -69,7 +89,7 @@ func TestFormatChangedGoFiles(t *testing.T) {
 
 		if strings.HasSuffix(path, ".pb.go") || //skip the pb code
 			strings.HasSuffix(path, "/wire_gen.go") || //skip the wire code
-			strings.Contains(path, "/internal/data/ent/") { //skip the auto gen code
+			strings.Contains(path, "/generated/data/ent/") { //skip the auto gen code
 			t.Log("skip:", path)
 			return false
 		}

@@ -1,9 +1,25 @@
+[![GoDoc](https://pkg.go.dev/badge/github.com/go-xlan/gogit)](https://pkg.go.dev/github.com/go-xlan/gogit)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-xlan/gogit)](https://goreportcard.com/report/github.com/go-xlan/gogit)
+
 # gogit
 
-`gogit` 是一个 Go 语言库，用于操作 Git 仓库。该库提供了一些常用的 Git 操作，如添加文件、查看状态、提交更改等。基于 `go-git` 库实现，提供了易于使用的 API 来简化 Git 操作。
+增强的 Git 操作工具包，提供简化的仓库管理，具备全面的提交和远程同步功能。
 
-## 说明
-[ENGLISH-README](README.md)
+---
+
+<!-- TEMPLATE (ZH) BEGIN: LANGUAGE NAVIGATION -->
+## 英文文档
+
+[ENGLISH README](README.md)
+<!-- TEMPLATE (ZH) END: LANGUAGE NAVIGATION -->
+
+## 核心特性
+
+🎯 **简化的 Git 操作**: 智能暂存、提交和状态检查，具备全面的 API
+⚡ **智能提交管理**: 自动暂存与提交和修正支持，防止不安全操作
+🔄 **远程推送检测**: 自动检查提交在多个远程仓库的推送状态
+🌍 **跨平台支持**: 纯 Go 实现，无需 CLI 依赖，基于 go-git 基础
+📋 **流畅的 API 设计**: 构建器模式，便于配置和方法链式调用
 
 ## 安装
 
@@ -11,142 +27,233 @@
 go get github.com/go-xlan/gogit
 ```
 
-## 使用
+## 快速开始
 
-### 初始化 Git 客户端
-
-首先，您需要初始化一个 Git 仓库的客户端实例。你可以通过 `New` 函数创建一个新的客户端对象。
+### 基本用法
 
 ```go
 package main
 
 import (
-	"fmt"
-	"log"
+    "fmt"
+    "log"
 
-	"github.com/go-xlan/gogit"
+    "github.com/go-xlan/gogit"
 )
 
 func main() {
-	client, _ := gogit.New("/path/to/your/repository")
-	fmt.Println("OK!")
+    // 初始化 Git 客户端
+    client, err := gogit.New("/path/to/your/repo")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // 暂存所有更改
+    err = client.AddAll()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // 使用流畅 API 创建提交信息
+    commitInfo := gogit.NewCommitInfo("初始提交").
+        WithName("您的姓名").
+        WithMailbox("your.email@example.com")
+
+    // 提交更改
+    hash, err := client.CommitAll(commitInfo)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Printf("提交创建成功: %s\n", hash)
 }
 ```
 
-### 添加所有更改
-
-要将所有更改添加到 Git 索引（即暂存区），可以使用 `AddAll` 方法：
+### 高级功能
 
 ```go
-err := client.AddAll()
-done.Done(err)
-```
-
-### 查看 Git 状态
-
-要查看当前工作区的状态，可以使用 `Status` 方法：
-
-```go
+// 检查仓库状态
 status, err := client.Status()
-done.Done(err)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("仓库状态: %+v\n", status)
 
-fmt.Println("Git Status: ", status)
-```
-
-### 提交更改
-
-要提交所有的更改，可以使用 `CommitAll` 方法，您需要传入一个 `CommitInfo` 结构体，该结构体用于定义提交信息和签名。
-
-```go
-commitInfo := gogit.CommitInfo{
-	Name:    "Your Name",
-	Eddress:  "youremail@example.com",
-	Message: "Your commit message",
+// 修正最后一次提交（带安全检查）
+amendConfig := &gogit.AmendConfig{
+    CommitInfo: gogit.NewCommitInfo("更新的提交信息").
+        WithName("更新的姓名").
+        WithMailbox("updated.email@example.com"),
+    ForceAmend: false, // 防止修正已推送的提交
 }
 
-commitHash, err := client.CommitAll(commitInfo)
-done.Done(err)
+hash, err := client.AmendCommit(amendConfig)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("修正提交成功: %s\n", hash)
 
-fmt.Println("Commit successful! Commit hash: ", commitHash)
+// 检查最新提交是否已推送到远程
+pushed, err := client.IsLatestCommitPushed()
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("最新提交已推送: %t\n", pushed)
 ```
 
-### 修改最新提交（Amend）
+## API 参考
 
-如果您想修改最新的提交信息，可以使用 `AmendCommit` 方法：
+### 核心方法
+
+- **`gogit.New(root string) (*Client, error)`**
+  为指定的仓库路径创建新的 Git 客户端，支持忽略文件
+
+- **`client.AddAll() error`**
+  暂存所有更改，包括新文件、修改和删除
+
+- **`client.Status() (git.Status, error)`**
+  返回当前工作树状态，包含全面的文件更改信息
+
+- **`client.CommitAll(info *CommitInfo) (string, error)`**
+  使用提供的创建者签名和消息提交所有已暂存的更改
+
+- **`client.AmendCommit(cfg *AmendConfig) (string, error)`**
+  修正最后一次提交，对已推送的提交进行安全检查
+
+- **`client.IsLatestCommitPushed() (bool, error)`**
+  检查当前分支是否已推送到任何配置的远程仓库
+
+- **`client.IsLatestCommitPushedToRemote(name string) (bool, error)`**
+  检查针对特定远程仓库的推送状态
+
+### 配置类型
 
 ```go
-amendConfig := gogit.AmendConfig{
-	//message
+// CommitInfo - 流畅的提交配置
+type CommitInfo struct {
+    Name    string // 用于 Git 提交的创建者姓名
+    Mailbox string // 用于 Git 提交的创建者邮箱
+    Message string // 提交消息内容
 }
 
-commitHash, err := client.AmendCommit(amendConfig)
-done.Done(err)
-
-fmt.Println("Amend successful! Commit hash: ", commitHash)
+// AmendConfig - 修正操作配置
+type AmendConfig struct {
+    CommitInfo *CommitInfo // 修正操作的新提交信息
+    ForceAmend bool        // 即使提交已推送也允许修正
+}
 ```
 
-### 其他功能
+### 流畅 API 示例
 
-`gogit` 还提供了一些其他功能，例如获取提交哈希和日志等。你可以参考源码进行扩展或修改。
+```go
+// 使用方法链式调用创建提交信息
+commitInfo := gogit.NewCommitInfo("功能实现").
+    WithName("开发者姓名").
+    WithMailbox("dev@company.com")
 
-## 函数说明
+// 如果没有提供消息，则使用默认消息生成
+commitInfo := gogit.NewCommitInfo("").
+    WithName("自动用户").
+    WithMailbox("auto@example.com")
+// 生成基于时间戳的消息: "[gogit](github.com/go-xlan/gogit) 2024-01-15 14:30:45"
+```
 
-- **`New(root string) (*Client, error)`**  
-  初始化并返回一个新的 `Client` 实例，用于操作指定路径下的 Git 仓库。
+## 安全特性
 
-- **`AddAll() error`**  
-  添加所有更改（包括删除文件）到 Git 索引（暂存区）。
+- **推送检测**: 防止修正已推送到远程仓库的提交
+- **忽略文件支持**: 在操作期间遵守 .gitignore 模式
+- **空提交处理**: 对于无更改的提交返回空字符串
+- **错误上下文**: 全面的错误包装，包含上下文信息
+- **哈希验证**: 在操作后验证提交完整性
 
-- **`Status() (git.Status, error)`**  
-  获取当前工作区的状态。
+## 最佳实践
 
-- **`CommitAll(options CommitInfo) (string, error)`**  
-  提交所有更改，并使用提供的 `CommitInfo` 生成提交信息。
+```go
+// 始终检查错误
+client, err := gogit.New("/path/to/repo")
+if err != nil {
+    return fmt.Errorf("创建客户端失败: %w", err)
+}
 
-- **`AmendCommit(options AmendConfig) (string, error)`**  
-  修改最近的一次提交（使用 `--amend` 标志），并且支持为空的提交信息从最近的提交中获取。
+// 使用流畅 API 进行清晰配置
+info := gogit.NewCommitInfo("修复严重错误").
+    WithName("错误修复者").
+    WithMailbox("fixer@company.com")
 
----
+// 修正前检查推送状态
+if pushed, _ := client.IsLatestCommitPushed(); pushed {
+    log.Println("警告: 无法修正已推送的提交")
+} else {
+    // 安全修正
+    hash, err := client.AmendCommit(&gogit.AmendConfig{
+        CommitInfo: info,
+        ForceAmend: false,
+    })
+}
+```
 
-## 许可
+<!-- TEMPLATE (ZH) BEGIN: STANDARD PROJECT FOOTER -->
+<!-- VERSION 2025-09-26 07:39:27.188023 +0000 UTC -->
 
-项目采用 MIT 许可证，详情请参阅 [LICENSE](LICENSE)。
+## 📄 许可证类型
 
----
-
-## 贡献新代码
-
-非常欢迎贡献代码！贡献流程：
-
-1. 在 GitHub 上 Fork 仓库 （通过网页界面操作）。
-2. 克隆Forked项目 (`git clone https://github.com/yourname/repo-name.git`)。
-3. 在克隆的项目里 (`cd repo-name`)
-4. 创建功能分支（`git checkout -b feature/xxx`）。
-5. 添加代码 (`git add .`)。
-6. 提交更改（`git commit -m "添加功能 xxx"`）。
-7. 推送分支（`git push origin feature/xxx`）。
-8. 发起 Pull Request （通过网页界面操作）。
-
-请确保测试通过并更新相关文档。
-
----
-
-## 贡献与支持
-
-欢迎通过提交 pull request 或报告问题来贡献此项目。
-
-如果你觉得这个包对你有帮助，请在 GitHub 上给个 ⭐，感谢支持！！！
-
-**感谢你的支持！**
-
-**祝编程愉快！** 🎉
-
-Give me stars. Thank you!!!
-
-帮我点个星星。谢谢!!!
+MIT 许可证。详见 [LICENSE](LICENSE)。
 
 ---
 
-## 帮我点个赞
+## 🤝 项目贡献
 
-[![starring](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)
+非常欢迎贡献代码！报告 BUG、建议功能、贡献代码：
+
+- 🐛 **发现问题？** 在 GitHub 上提交问题并附上重现步骤
+- 💡 **功能建议？** 创建 issue 讨论您的想法
+- 📖 **文档疑惑？** 报告问题，帮助我们改进文档
+- 🚀 **需要功能？** 分享使用场景，帮助理解需求
+- ⚡ **性能瓶颈？** 报告慢操作，帮助我们优化性能
+- 🔧 **配置困扰？** 询问复杂设置的相关问题
+- 📢 **关注进展？** 关注仓库以获取新版本和功能
+- 🌟 **成功案例？** 分享这个包如何改善工作流程
+- 💬 **反馈意见？** 欢迎提出建议和意见
+
+---
+
+## 🔧 代码贡献
+
+新代码贡献，请遵循此流程：
+
+1. **Fork**：在 GitHub 上 Fork 仓库（使用网页界面）
+2. **克隆**：克隆 Fork 的项目（`git clone https://github.com/yourname/repo-name.git`）
+3. **导航**：进入克隆的项目（`cd repo-name`）
+4. **分支**：创建功能分支（`git checkout -b feature/xxx`）
+5. **编码**：实现您的更改并编写全面的测试
+6. **测试**：（Golang 项目）确保测试通过（`go test ./...`）并遵循 Go 代码风格约定
+7. **文档**：为面向用户的更改更新文档，并使用有意义的提交消息
+8. **暂存**：暂存更改（`git add .`）
+9. **提交**：提交更改（`git commit -m "Add feature xxx"`）确保向后兼容的代码
+10. **推送**：推送到分支（`git push origin feature/xxx`）
+11. **PR**：在 GitHub 上打开 Merge Request（在 GitHub 网页上）并提供详细描述
+
+请确保测试通过并包含相关的文档更新。
+
+---
+
+## 🌟 项目支持
+
+非常欢迎通过提交 Merge Request 和报告问题来为此项目做出贡献。
+
+**项目支持：**
+
+- ⭐ **给予星标**如果项目对您有帮助
+- 🤝 **分享项目**给团队成员和（golang）编程朋友
+- 📝 **撰写博客**关于开发工具和工作流程 - 我们提供写作支持
+- 🌟 **加入生态** - 致力于支持开源和（golang）开发场景
+
+**祝你用这个包编程愉快！** 🎉🎉🎉
+
+<!-- TEMPLATE (ZH) END: STANDARD PROJECT FOOTER -->
+
+---
+
+## GitHub 标星点赞
+
+[![Stargazers](https://starchart.cc/go-xlan/gogit.svg?variant=adaptive)](https://starchart.cc/go-xlan/gogit)
