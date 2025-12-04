@@ -18,12 +18,12 @@ import (
 )
 
 // NewRepo opens an existing Git repo at the specified root path
-// Returns configured repo instance prepared for Git operations
-// Wraps go-git PlainOpen with error handling
+// Returns configured repo instance that is usable with Git commands
+// Wraps go-git PlainOpen with exception handling
 //
 // NewRepo 在指定根路径打开现有 Git 仓库
-// 返回配置好的仓库实例，准备进行 Git 操作
-// 使用错误处理包装 go-git PlainOpen
+// 返回可用于 Git 命令的配置好的仓库实例
+// 使用异常处理包装 go-git PlainOpen
 func NewRepo(root string) (*git.Repository, error) {
 	repo, err := git.PlainOpen(root)
 	if err != nil {
@@ -49,14 +49,14 @@ func NewRepoTreeWithIgnore(root string) (repo *git.Repository, tree *git.Worktre
 		return nil, nil, erero.Wro(err)
 	}
 
-	// Apply ignore patterns in sequence: system < system < project
+	// Apply ignore patterns in sequence: system < global < project
 	// 按优先级应用忽略模式：系统 < 全局 < 项目
 
 	// Lowest sequence - system-wide ignore patterns
 	// 最低优先级 - 系统级忽略模式
 	SetIgnorePatterns(tree, done.VAE(gitignore.LoadSystemPatterns(osfs.New("/"))).Done())
 
-	// Medium sequence - system ignore patterns
+	// Medium sequence - global ignore patterns
 	// 中等优先级 - 全局忽略模式
 	SetIgnorePatterns(tree, done.VAE(gitignore.LoadGlobalPatterns(osfs.New("/"))).Done())
 
@@ -67,13 +67,13 @@ func NewRepoTreeWithIgnore(root string) (repo *git.Repository, tree *git.Worktre
 	return repo, tree, nil
 }
 
-// DebugRepo outputs detailed repo info for debugging purposes
+// DebugRepo outputs detailed repo info to assist with debugging
 // Logs HEAD reference and commit object details
-// Handles errors with structured logging
+// Handles issues with structured logging
 //
-// DebugRepo 输出详细的仓库信息用于调试目的
+// DebugRepo 输出详细的仓库信息以辅助调试
 // 记录 HEAD 引用和提交对象详情
-// 使用结构化日志优雅处理错误
+// 使用结构化日志处理问题
 func DebugRepo(repo *git.Repository) {
 	topReference, err := repo.Head()
 	if err != nil {

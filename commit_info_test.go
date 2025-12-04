@@ -20,10 +20,10 @@ func TestPackageName(t *testing.T) {
 }
 
 // TestPackagePath verifies package path constant matches current import path
-// Ensures package path precision for default commit message generation
+// Ensures package path is precise when generating commit message defaults
 //
 // TestPackagePath 验证包路径常量与实际导入路径匹配
-// 确保包路径准确性以生成默认提交消息
+// 确保生成默认提交消息时包路径准确
 func TestPackagePath(t *testing.T) {
 	require.Equal(t, packagePath, syntaxgo_reflect.GetPkgPathV4(&CommitInfo{}))
 }
@@ -78,10 +78,10 @@ func TestCommitInfo_CheckFullMessage(t *testing.T) {
 	t.Log(neatjsons.S(authorInfo))
 }
 
-// TestCommitInfo_CheckNoneMessage tests default value actions
-// Verifies blank CommitInfo uses package defaults for name and mailbox
+// TestCommitInfo_CheckNoneMessage tests default settings when values are absent
+// Verifies blank CommitInfo uses package defaults as name and mailbox
 //
-// TestCommitInfo_CheckNoneMessage 测试默认值行为
+// TestCommitInfo_CheckNoneMessage 测试值缺失时的默认设置
 // 验证空 CommitInfo 使用包默认值作为名称和邮箱
 func TestCommitInfo_CheckNoneMessage(t *testing.T) {
 	commitInfo := CommitInfo{}

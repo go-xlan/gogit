@@ -1,7 +1,7 @@
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/go-xlan/gogit/release.yml?branch=main&label=BUILD)](https://github.com/go-xlan/gogit/actions/workflows/release.yml?query=branch%3Amain)
 [![GoDoc](https://pkg.go.dev/badge/github.com/go-xlan/gogit)](https://pkg.go.dev/github.com/go-xlan/gogit)
 [![Coverage Status](https://img.shields.io/coveralls/github/go-xlan/gogit/main.svg)](https://coveralls.io/github/go-xlan/gogit?branch=main)
-[![Supported Go Versions](https://img.shields.io/badge/Go-1.22--1.25-lightgrey.svg)](https://go.dev/)
+[![Supported Go Versions](https://img.shields.io/badge/Go-1.25+-lightgrey.svg)](https://go.dev/)
 [![GitHub Release](https://img.shields.io/github/release/go-xlan/gogit.svg)](https://github.com/go-xlan/gogit/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/go-xlan/gogit)](https://goreportcard.com/report/github.com/go-xlan/gogit)
 
@@ -12,6 +12,7 @@
 ---
 
 <!-- TEMPLATE (ZH) BEGIN: LANGUAGE NAVIGATION -->
+
 ## 英文文档
 
 [ENGLISH README](README.md)
@@ -24,6 +25,11 @@
 🔄 **远程推送检测**: 自动检查提交在多个远程仓库的推送状态
 🌍 **跨平台支持**: 纯 Go 实现，无需 CLI 依赖，基于 go-git 基础
 📋 **流畅的 API 设计**: 构建器模式，便于配置和方法链式调用
+
+## 关联项目
+
+- **[gitgo](https://github.com/go-xlan/gitgo)** - 流式 Git 命令执行引擎，具有流畅的链式调用接口，使用 os/exec 运行 Git CLI 命令
+- **[gogit](https://github.com/go-xlan/gogit)**（本项目）- 增强型 Git 操作工具包，基于 go-git 实现，提供纯 Go 实现
 
 ## 安装
 
@@ -61,7 +67,7 @@ func main() {
     // 使用流畅 API 创建提交信息
     commitInfo := gogit.NewCommitInfo("初始提交").
         WithName("您的姓名").
-        WithMailbox("your.email@example.com")
+        WithMailbox("your.mailbox@example.com")
 
     // 提交更改
     hash, err := client.CommitAll(commitInfo)
@@ -87,7 +93,7 @@ fmt.Printf("仓库状态: %+v\n", status)
 amendConfig := &gogit.AmendConfig{
     CommitInfo: gogit.NewCommitInfo("更新的提交信息").
         WithName("更新的姓名").
-        WithMailbox("updated.email@example.com"),
+        WithMailbox("updated.mailbox@example.com"),
     ForceAmend: false, // 防止修正已推送的提交
 }
 
@@ -130,6 +136,18 @@ fmt.Printf("最新提交已推送: %t\n", pushed)
 - **`client.IsLatestCommitPushedToRemote(name string) (bool, error)`**
   检查针对特定远程仓库的推送状态
 
+- **`client.GetCurrentBranch() (string, error)`**
+  返回当前分支名称
+
+- **`client.GetLatestCommit() (*object.Commit, error)`**
+  返回最新提交对象，包含消息和作者信息
+
+- **`client.HasChanges() (bool, error)`**
+  检查仓库是否有未提交的更改
+
+- **`client.GetRemoteURL(name string) (string, error)`**
+  返回指定远程的 URL
+
 ### 配置类型
 
 ```go
@@ -157,7 +175,7 @@ commitInfo := gogit.NewCommitInfo("功能实现").
 
 // 如果没有提供消息，则使用默认消息生成
 commitInfo := gogit.NewCommitInfo("").
-    WithName("自动用户").
+    WithName("自动账户").
     WithMailbox("auto@example.com")
 // 生成基于时间戳的消息: "[gogit](github.com/go-xlan/gogit) 2024-01-15 14:30:45"
 ```
@@ -197,23 +215,23 @@ if pushed, _ := client.IsLatestCommitPushed(); pushed {
 ```
 
 <!-- TEMPLATE (ZH) BEGIN: STANDARD PROJECT FOOTER -->
-<!-- VERSION 2025-09-26 07:39:27.188023 +0000 UTC -->
+<!-- VERSION 2025-11-25 03:52:28.131064 +0000 UTC -->
 
 ## 📄 许可证类型
 
-MIT 许可证。详见 [LICENSE](LICENSE)。
+MIT 许可证 - 详见 [LICENSE](LICENSE)。
 
 ---
 
-## 🤝 项目贡献
+## 💬 联系与反馈
 
 非常欢迎贡献代码！报告 BUG、建议功能、贡献代码：
 
-- 🐛 **发现问题？** 在 GitHub 上提交问题并附上重现步骤
-- 💡 **功能建议？** 创建 issue 讨论您的想法
-- 📖 **文档疑惑？** 报告问题，帮助我们改进文档
+- 🐛 **问题报告？** 在 GitHub 上提交问题并附上重现步骤
+- 💡 **新颖思路？** 创建 issue 讨论
+- 📖 **文档疑惑？** 报告问题，帮助我们完善文档
 - 🚀 **需要功能？** 分享使用场景，帮助理解需求
-- ⚡ **性能瓶颈？** 报告慢操作，帮助我们优化性能
+- ⚡ **性能瓶颈？** 报告慢操作，协助解决性能问题
 - 🔧 **配置困扰？** 询问复杂设置的相关问题
 - 📢 **关注进展？** 关注仓库以获取新版本和功能
 - 🌟 **成功案例？** 分享这个包如何改善工作流程
@@ -231,7 +249,7 @@ MIT 许可证。详见 [LICENSE](LICENSE)。
 4. **分支**：创建功能分支（`git checkout -b feature/xxx`）
 5. **编码**：实现您的更改并编写全面的测试
 6. **测试**：（Golang 项目）确保测试通过（`go test ./...`）并遵循 Go 代码风格约定
-7. **文档**：为面向用户的更改更新文档，并使用有意义的提交消息
+7. **文档**：面向用户的更改需要更新文档
 8. **暂存**：暂存更改（`git add .`）
 9. **提交**：提交更改（`git commit -m "Add feature xxx"`）确保向后兼容的代码
 10. **推送**：推送到分支（`git push origin feature/xxx`）
@@ -243,7 +261,7 @@ MIT 许可证。详见 [LICENSE](LICENSE)。
 
 ## 🌟 项目支持
 
-非常欢迎通过提交 Merge Request 和报告问题来为此项目做出贡献。
+非常欢迎通过提交 Merge Request 和报告问题来贡献此项目。
 
 **项目支持：**
 

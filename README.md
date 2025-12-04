@@ -1,7 +1,7 @@
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/go-xlan/gogit/release.yml?branch=main&label=BUILD)](https://github.com/go-xlan/gogit/actions/workflows/release.yml?query=branch%3Amain)
 [![GoDoc](https://pkg.go.dev/badge/github.com/go-xlan/gogit)](https://pkg.go.dev/github.com/go-xlan/gogit)
 [![Coverage Status](https://img.shields.io/coveralls/github/go-xlan/gogit/main.svg)](https://coveralls.io/github/go-xlan/gogit?branch=main)
-[![Supported Go Versions](https://img.shields.io/badge/Go-1.22--1.25-lightgrey.svg)](https://go.dev/)
+[![Supported Go Versions](https://img.shields.io/badge/Go-1.25+-lightgrey.svg)](https://go.dev/)
 [![GitHub Release](https://img.shields.io/github/release/go-xlan/gogit.svg)](https://github.com/go-xlan/gogit/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/go-xlan/gogit)](https://goreportcard.com/report/github.com/go-xlan/gogit)
 
@@ -12,6 +12,7 @@ Enhanced Git operations toolkit providing streamlined repo management with compr
 ---
 
 <!-- TEMPLATE (EN) BEGIN: LANGUAGE NAVIGATION -->
+
 ## CHINESE README
 
 [中文说明](README.zh.md)
@@ -24,6 +25,11 @@ Enhanced Git operations toolkit providing streamlined repo management with compr
 🔄 **Remote Push Detection**: Automatic checking of commit push status across multiple remotes
 🌍 **Cross-Platform Support**: Pure Go implementation without CLI dependencies using go-git foundation
 📋 **Fluent API Design**: Builder pattern for convenient configuration and method chaining
+
+## Related Projects
+
+- **[gitgo](https://github.com/go-xlan/gitgo)** - Streamlined Git command execution engine with fluent chaining interface, using os/exec to run Git CLI commands
+- **[gogit](https://github.com/go-xlan/gogit)** (this project) - Enhanced Git operations toolkit with go-git foundation, providing pure Go implementation
 
 ## Installation
 
@@ -61,7 +67,7 @@ func main() {
     // Create commit info with fluent API
     commitInfo := gogit.NewCommitInfo("Initial commit").
         WithName("Your Name").
-        WithMailbox("your.email@example.com")
+        WithMailbox("your.mailbox@example.com")
 
     // Commit changes
     hash, err := client.CommitAll(commitInfo)
@@ -87,7 +93,7 @@ fmt.Printf("Repository status: %+v\n", status)
 amendConfig := &gogit.AmendConfig{
     CommitInfo: gogit.NewCommitInfo("Updated commit message").
         WithName("Updated Name").
-        WithMailbox("updated.email@example.com"),
+        WithMailbox("updated.mailbox@example.com"),
     ForceAmend: false, // Prevents amending pushed commits
 }
 
@@ -130,6 +136,18 @@ fmt.Printf("Latest commit pushed: %t\n", pushed)
 - **`client.IsLatestCommitPushedToRemote(name string) (bool, error)`**
   Checks push status against a specific remote repo
 
+- **`client.GetCurrentBranch() (string, error)`**
+  Returns the name of the current branch
+
+- **`client.GetLatestCommit() (*object.Commit, error)`**
+  Returns the latest commit object with message and author info
+
+- **`client.HasChanges() (bool, error)`**
+  Checks if the repo has uncommitted changes
+
+- **`client.GetRemoteURL(name string) (string, error)`**
+  Returns the URL for the specified remote
+
 ### Configuration Types
 
 ```go
@@ -157,7 +175,7 @@ commitInfo := gogit.NewCommitInfo("Feature implementation").
 
 // Use default message generation if no message provided
 commitInfo := gogit.NewCommitInfo("").
-    WithName("Auto User").
+    WithName("Auto Account").
     WithMailbox("auto@example.com")
 // Generates timestamp-based message: "[gogit](github.com/go-xlan/gogit) 2024-01-15 14:30:45"
 ```
@@ -197,20 +215,20 @@ if pushed, _ := client.IsLatestCommitPushed(); pushed {
 ```
 
 <!-- TEMPLATE (EN) BEGIN: STANDARD PROJECT FOOTER -->
-<!-- VERSION 2025-09-26 07:39:27.188023 +0000 UTC -->
+<!-- VERSION 2025-11-25 03:52:28.131064 +0000 UTC -->
 
 ## 📄 License
 
-MIT License. See [LICENSE](LICENSE).
+MIT License - see [LICENSE](LICENSE).
 
 ---
 
-## 🤝 Contributing
+## 💬 Contact & Feedback
 
 Contributions are welcome! Report bugs, suggest features, and contribute code:
 
-- 🐛 **Found a mistake?** Open an issue on GitHub with reproduction steps
-- 💡 **Have a feature idea?** Create an issue to discuss the suggestion
+- 🐛 **Mistake reports?** Open an issue on GitHub with reproduction steps
+- 💡 **Fresh ideas?** Create an issue to discuss
 - 📖 **Documentation confusing?** Report it so we can improve
 - 🚀 **Need new features?** Share the use cases to help us understand requirements
 - ⚡ **Performance issue?** Help us optimize through reporting slow operations
@@ -231,7 +249,7 @@ New code contributions, follow this process:
 4. **Branch**: Create a feature branch (`git checkout -b feature/xxx`).
 5. **Code**: Implement the changes with comprehensive tests
 6. **Testing**: (Golang project) Ensure tests pass (`go test ./...`) and follow Go code style conventions
-7. **Documentation**: Update documentation to support client-facing changes and use significant commit messages
+7. **Documentation**: Update documentation to support client-facing changes
 8. **Stage**: Stage changes (`git add .`)
 9. **Commit**: Commit changes (`git commit -m "Add feature xxx"`) ensuring backward compatible code
 10. **Push**: Push to the branch (`git push origin feature/xxx`).

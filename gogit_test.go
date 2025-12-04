@@ -4,10 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-xlan/gogit"
 	"github.com/go-xlan/gogit/gogitassist"
 	"github.com/stretchr/testify/require"
@@ -17,13 +15,15 @@ import (
 	"github.com/yyle88/runpath"
 )
 
-// TestNew verifies client initialization from project root path
+// TestNew verifies client creation from temp repo
 // Tests basic client creation and status checking features
 //
-// TestNew 验证从项目根路径初始化客户端
+// TestNew 验证从临时仓库创建客户端
 // 测试基本客户端创建和状态检查功能
 func TestNew(t *testing.T) {
-	client, err := gogit.New(runpath.PARENT.Path())
+	tempDIR := setupTestRepo(t)
+
+	client, err := gogit.New(tempDIR)
 	require.NoError(t, err)
 	gogitassist.DebugRepo(client.Repo())
 
@@ -33,13 +33,15 @@ func TestNew(t *testing.T) {
 	t.Log(neatjsons.S(status))
 }
 
-// TestNewClient tests client creation using rese support patterns
-// Verifies alternative client initialization approach with error handling
+// TestNewClient tests creation using rese patterns as convenience wrappers
+// Verifies that rese.P1 provides consistent handling and panic-on-issue semantics
 //
 // TestNewClient 使用 rese 辅助模式测试客户端创建
-// 验证带错误处理的替代客户端初始化方法
+// 验证 rese.P1 提供一致的处理和遇错即崩语义
 func TestNewClient(t *testing.T) {
-	client := rese.P1(gogit.New(runpath.PARENT.Path()))
+	tempDIR := setupTestRepo(t)
+
+	client := rese.P1(gogit.New(tempDIR))
 	gogitassist.DebugRepo(client.Repo())
 
 	status, err := client.Status()
@@ -49,14 +51,15 @@ func TestNewClient(t *testing.T) {
 }
 
 // TestClient_IsLatestCommitPushedToRemote tests remote push status detection
-// Verifies function to check if latest commit exists in specified remote
+// Verifies the function that checks if HEAD commit exists in specified remote
+// Uses production repo since it needs a functioning remote connection
 //
 // TestClient_IsLatestCommitPushedToRemote 测试远程推送状态检测
-// 验证检查最新提交是否存在于指定远程的能力
+// 验证检查 HEAD 提交是否存在于指定远程的函数
+// 使用真实仓库因为需要有效的远程连接
 func TestClient_IsLatestCommitPushedToRemote(t *testing.T) {
 	client, err := gogit.New(runpath.PARENT.Path())
 	require.NoError(t, err)
-	gogitassist.DebugRepo(client.Repo())
 
 	matched, err := client.IsLatestCommitPushedToRemote("origin")
 	require.NoError(t, err)
@@ -64,14 +67,15 @@ func TestClient_IsLatestCommitPushedToRemote(t *testing.T) {
 }
 
 // TestClient_IsLatestCommitPushedToRemote_NotExist tests response with non-existent remote
-// Verifies function returns false for remotes that do not exist
+// Verifies that the function returns false when remote does not exist
 //
 // TestClient_IsLatestCommitPushedToRemote_NotExist 测试不存在远程的行为
-// 验证对不存在的远程返回 false
+// 验证远程不存在时函数返回 false
 func TestClient_IsLatestCommitPushedToRemote_NotExist(t *testing.T) {
-	client, err := gogit.New(runpath.PARENT.Path())
+	tempDIR := setupTestRepo(t)
+
+	client, err := gogit.New(tempDIR)
 	require.NoError(t, err)
-	gogitassist.DebugRepo(client.Repo())
 
 	matched, err := client.IsLatestCommitPushedToRemote("origin2")
 	require.NoError(t, err)
@@ -79,64 +83,54 @@ func TestClient_IsLatestCommitPushedToRemote_NotExist(t *testing.T) {
 	require.False(t, matched)
 }
 
-// TestClient_IsLatestCommitPushed tests push status across all configured remotes
-// Verifies detection of commit push status across multiple remote repos
+// TestClient_IsLatestCommitPushed tests push status across configured remotes
+// Verifies detection of commit push state when checking against all remotes
+// Uses production repo since it needs a functioning remote connection
 //
 // TestClient_IsLatestCommitPushed 测试所有配置远程的推送状态
-// 验证跨多个远程仓库的提交推送状态检测
+// 验证针对所有远程检查时的提交推送状态检测
+// 使用真实仓库因为需要有效的远程连接
 func TestClient_IsLatestCommitPushed(t *testing.T) {
 	client, err := gogit.New(runpath.PARENT.Path())
 	require.NoError(t, err)
-	gogitassist.DebugRepo(client.Repo())
 
 	pushed, err := client.IsLatestCommitPushed()
 	require.NoError(t, err)
 	t.Log(pushed)
 }
 
-// setupTestRepo creates a temp git repo to facilitate testing
-// Environment setup must succeed, so we use rese/must for all operations
-// Returns the temp DIR path and cleanup function
+// setupTestRepo creates a temp git repo with t.Cleanup enabling auto-dispose
+// Environment setup must succeed, so we use rese/must to handle all tasks
+// Returns the temp DIR path
 //
-// setupTestRepo 为测试目的创建临时 git 仓库
-// 环境设置必须成功，因此我们对所有操作使用 rese/must
-// 返回临时 DIR 路径和清理函数
-func setupTestRepo() (string, func()) {
+// setupTestRepo 使用 t.Cleanup 创建临时 git 仓库以便自动删除
+// 环境设置必须成功，因此我们使用 rese/must 处理所有任务
+// 返回临时 DIR 路径
+func setupTestRepo(t *testing.T) string {
 	// Create temp DIR - must succeed
 	// 创建临时 DIR - 必须成功
 	tempDIR := rese.V1(os.MkdirTemp("", "gogit-test-*"))
 
-	// Initialize git repo using go-git - must succeed
-	// 使用 go-git 初始化 git 仓库 - 必须成功
-	repo := rese.V1(git.PlainInit(tempDIR, false))
+	// Set up t.Cleanup to auto-dispose temp resources when test ends
+	// 设置 t.Cleanup 在测试结束时自动清理临时资源
+	t.Cleanup(func() {
+		must.Done(os.RemoveAll(tempDIR))
+	})
 
-	// Create first commit to make it a valid repo - must succeed
-	// 创建初始提交使其成为有效仓库 - 必须成功
+	// Initialize git repo using gogitassist - must succeed
+	// 使用 gogitassist 初始化 git 仓库 - 必须成功
+	repo := rese.P1(gogitassist.InitRepo(tempDIR))
+
+	// Create base commit making it a functioning repo - must succeed
+	// 创建基础提交使其成为有效仓库 - 必须成功
 	testFile := filepath.Join(tempDIR, "README.md")
 	must.Done(os.WriteFile(testFile, []byte("# Test Project\n"), 0644))
 
-	// Get worktree and add file - must succeed
-	// 获取工作树并添加文件 - 必须成功
-	worktree := rese.V1(repo.Worktree())
-	rese.V1(worktree.Add("README.md"))
+	// Create base commit using gogitassist - must succeed
+	// 使用 gogitassist 创建基础提交 - 必须成功
+	rese.V1(gogitassist.Commit(repo, "Base commit", "Test Account", "test@example.com"))
 
-	// Create first commit - must succeed
-	// 创建初始提交 - 必须成功
-	rese.V1(worktree.Commit("Base commit", &git.CommitOptions{
-		Author: &object.Signature{
-			Name:  "Test Account",
-			Email: "test@example.com",
-			When:  time.Now(),
-		},
-	}))
-
-	// Return cleanup function
-	// 返回清理函数
-	cleanup := func() {
-		must.Done(os.RemoveAll(tempDIR))
-	}
-
-	return tempDIR, cleanup
+	return tempDIR
 }
 
 // TestClient_CommitAll_EmptyCommit verifies action when no changes exist
@@ -145,8 +139,7 @@ func setupTestRepo() (string, func()) {
 // TestClient_CommitAll_EmptyCommit 验证没有更改时的行为
 // 对于空提交应该返回空字符串而不报错
 func TestClient_CommitAll_EmptyCommit(t *testing.T) {
-	tempDIR, cleanup := setupTestRepo()
-	defer cleanup()
+	tempDIR := setupTestRepo(t)
 
 	client, err := gogit.New(tempDIR)
 	require.NoError(t, err)
@@ -171,8 +164,7 @@ func TestClient_CommitAll_EmptyCommit(t *testing.T) {
 // TestClient_CommitAll_WithNewFile 验证提交新文件
 // 应该成功提交并返回哈希
 func TestClient_CommitAll_WithNewFile(t *testing.T) {
-	tempDIR, cleanup := setupTestRepo()
-	defer cleanup()
+	tempDIR := setupTestRepo(t)
 
 	client, err := gogit.New(tempDIR)
 	require.NoError(t, err)
@@ -211,8 +203,7 @@ func TestClient_CommitAll_WithNewFile(t *testing.T) {
 // TestClient_CommitAll_WithModifiedFile 验证提交修改
 // 应该成功提交对现有文件的更改
 func TestClient_CommitAll_WithModifiedFile(t *testing.T) {
-	tempDIR, cleanup := setupTestRepo()
-	defer cleanup()
+	tempDIR := setupTestRepo(t)
 
 	client, err := gogit.New(tempDIR)
 	require.NoError(t, err)
@@ -247,8 +238,7 @@ func TestClient_CommitAll_WithModifiedFile(t *testing.T) {
 // TestClient_AmendCommit_Success 验证修改先前的提交
 // 未推送时应该成功修改
 func TestClient_AmendCommit_Success(t *testing.T) {
-	tempDIR, cleanup := setupTestRepo()
-	defer cleanup()
+	tempDIR := setupTestRepo(t)
 
 	client, err := gogit.New(tempDIR)
 	require.NoError(t, err)

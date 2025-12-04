@@ -29,13 +29,13 @@ type ChangedFileManager struct {
 	tree        *git.Worktree // Git worktree for status checking // 用于状态检查的 Git 工作树
 }
 
-// NewChangedFileManager creates a new component for changed file operations
-// Validates project path and associates worktree for file change detection
-// Returns configured component prepared for changed file processing
+// NewChangedFileManager creates a new component to handle changed files
+// Validates project path and associates worktree enabling file change detection
+// Returns configured component usable in changed file processing
 //
-// NewChangedFileManager 创建用于变更文件操作的新处理器
-// 验证项目路径并关联工作树以进行文件变更检测
-// 返回配置好的管理器，准备进行变更文件处理
+// NewChangedFileManager 创建用于处理变更文件的新组件
+// 验证项目路径并关联工作树以启用文件变更检测
+// 返回可用于变更文件处理的配置好的组件
 func NewChangedFileManager(projectPath string, worktree *git.Worktree) *ChangedFileManager {
 	return &ChangedFileManager{
 		projectPath: osmustexist.ROOT(must.Nice(projectPath)),
@@ -60,6 +60,12 @@ func (m *ChangedFileManager) Foreach(matchOptions *MatchOptions, process func(pa
 		// Screen out deleted files as these cannot be processed
 		// 过滤掉已删除的文件，因为它们无法被处理
 		if status.Staging == git.Deleted {
+			continue
+		}
+
+		// Screen files by status if status matching is specified
+		// 如果指定了状态匹配，则按状态过滤文件
+		if !matchOptions.hasStatusMatch(status) {
 			continue
 		}
 
@@ -121,11 +127,11 @@ func (m *ChangedFileManager) ListChangedFilePaths(matchOptions *MatchOptions) ([
 
 // ForeachChangedGoFile iterates through all changed Go files and processes each one
 // Screens changed files to include just .go files and applies custom processing
-// Convenient support around Foreach for Go-specific file operations
+// Convenient Foreach facade targeting Go-specific file operations
 //
 // ForeachChangedGoFile 遍历所有变化的 Go 文件并处理每一个
 // 过滤变更文件仅包含 .go 文件并应用自定义处理
-// 针对 Go 特定文件操作的 Foreach 便捷包装器
+// 针对 Go 特定文件操作的 Foreach 便捷外观
 func (m *ChangedFileManager) ForeachChangedGoFile(matchOptions *MatchOptions, process func(path string) error) error {
 	if err := m.Foreach(matchOptions, func(path string) error {
 		if filepath.Ext(path) != ".go" {

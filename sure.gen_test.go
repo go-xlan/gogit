@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/yyle88/runpath"
 	"github.com/yyle88/runpath/runtestpath"
 	"github.com/yyle88/sure"
@@ -28,7 +29,7 @@ func TestGen(t *testing.T) {
 	cfg := &sure_cls_gen.ClassGenConfig{
 		ClassGenOptions: param,
 		PackageName:     syntaxgo.CurrentPackageName(),
-		ImportOptions:   syntaxgo_ast.NewPackageImportOptions().SetInferredObject(git.Status{}),
+		ImportOptions:   syntaxgo_ast.NewPackageImportOptions().SetInferredObject(git.Status{}).SetInferredObject(object.Commit{}),
 		OutputPath:      runtestpath.SrcPath(t),
 	}
 	sure_cls_gen.GenerateClasses(cfg, Client{})

@@ -64,11 +64,11 @@ func LoadIgnorePatternsFromPath(path string) ([]gitignore.Pattern, error) {
 
 // LoadIgnorePatternsFromText parses gitignore patterns from text content
 // Processes each line, ignoring comments and blank lines
-// Returns parsed gitignore patterns prepared for use
+// Returns parsed gitignore patterns that are usable
 //
 // LoadIgnorePatternsFromText 从文本内容解析 gitignore 模式
 // 处理每一行，忽略注释和空行
-// 返回解析好的 gitignore 模式供使用
+// 返回可用的已解析 gitignore 模式
 func LoadIgnorePatternsFromText(text string) ([]gitignore.Pattern, error) {
 	var patterns = make([]gitignore.Pattern, 0)
 	for _, stx := range strings.Split(text, "\n") {
