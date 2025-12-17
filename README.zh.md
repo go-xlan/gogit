@@ -16,6 +16,7 @@
 ## 英文文档
 
 [ENGLISH README](README.md)
+
 <!-- TEMPLATE (ZH) END: LANGUAGE NAVIGATION -->
 
 ## 核心特性
@@ -147,6 +148,9 @@ fmt.Printf("最新提交已推送: %t\n", pushed)
 
 - **`client.GetRemoteURL(name string) (string, error)`**
   返回指定远程的 URL
+
+- **`client.GetFirstRemoteURL() (string, error)`**
+  返回第一个可用远程的 URL
 
 ### 配置类型
 

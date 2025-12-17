@@ -64,12 +64,12 @@ func (m *MatchOptions) MatchStatus(statuses ...git.StatusCode) *MatchOptions {
 	return m
 }
 
-// hasStatusMatch checks if the given file status matches any of the configured status codes
+// HasStatusMatch checks if the given file status matches any of the configured status codes
 // Returns true if no status filter is set or if the file status matches any configured code
 //
-// hasStatusMatch 检查给定的文件状态是否匹配任何配置的状态码
+// HasStatusMatch 检查给定的文件状态是否匹配任何配置的状态码
 // 如果未设置状态过滤器或文件状态匹配任何配置的代码则返回 true
-func (m *MatchOptions) hasStatusMatch(fileStatus *git.FileStatus) bool {
+func (m *MatchOptions) HasStatusMatch(fileStatus *git.FileStatus) bool {
 	// No status constraints means accept everything
 	// 没有状态约束意味着接受所有
 	if len(m.matchStatuses) == 0 {

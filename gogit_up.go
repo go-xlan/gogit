@@ -68,11 +68,11 @@ func (c *Client) HasChanges() (bool, error) {
 
 // GetRemoteURL returns the URL of the specified remote
 // Retrieves URL from remote config using the given name
-// Returns blank string when remote not found
+// Returns error when remote not found or has no URLs configured
 //
 // GetRemoteURL 返回指定远程的 URL
 // 使用给定名称从远程配置获取 URL
-// 未找到远程时返回空字符串
+// 未找到远程或未配置 URL 时返回错误
 func (c *Client) GetRemoteURL(remoteName string) (string, error) {
 	// Get remote by name
 	// 按名称获取远程
@@ -84,7 +84,29 @@ func (c *Client) GetRemoteURL(remoteName string) (string, error) {
 	// 从远程配置获取 URL
 	urls := remote.Config().URLs
 	if len(urls) == 0 {
-		return "", nil
+		return "", erero.New("remote has no URLs configured")
+	}
+	return urls[0], nil
+}
+
+// GetFirstRemoteURL returns the URL of the first available remote
+// Returns error when no remotes exist or no URLs configured
+// Returns error when fetching remotes fails
+//
+// GetFirstRemoteURL 返回第一个可用远程的 URL
+// 当没有远程或未配置 URL 时返回错误
+// 当获取远程失败时返回错误
+func (c *Client) GetFirstRemoteURL() (string, error) {
+	remotes, err := c.repo.Remotes()
+	if err != nil {
+		return "", erero.Wro(err)
+	}
+	if len(remotes) == 0 {
+		return "", erero.New("remote repo is not configured")
+	}
+	urls := remotes[0].Config().URLs
+	if len(urls) == 0 {
+		return "", erero.New("remote has no URLs configured")
 	}
 	return urls[0], nil
 }

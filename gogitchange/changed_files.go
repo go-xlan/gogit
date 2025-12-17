@@ -65,7 +65,7 @@ func (m *ChangedFileManager) Foreach(matchOptions *MatchOptions, process func(pa
 
 		// Screen files by status if status matching is specified
 		// 如果指定了状态匹配，则按状态过滤文件
-		if !matchOptions.hasStatusMatch(status) {
+		if !matchOptions.HasStatusMatch(status) {
 			continue
 		}
 

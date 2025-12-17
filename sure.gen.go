@@ -73,3 +73,8 @@ func (T *Client88Must) GetRemoteURL(remoteName string) (res string) {
 	sure.Must(err1)
 	return res
 }
+func (T *Client88Must) GetFirstRemoteURL() (res string) {
+	res, err1 := T.c.GetFirstRemoteURL()
+	sure.Must(err1)
+	return res
+}

@@ -16,6 +16,7 @@ Enhanced Git operations toolkit providing streamlined repo management with compr
 ## CHINESE README
 
 [中文说明](README.zh.md)
+
 <!-- TEMPLATE (EN) END: LANGUAGE NAVIGATION -->
 
 ## Core Features
@@ -147,6 +148,9 @@ fmt.Printf("Latest commit pushed: %t\n", pushed)
 
 - **`client.GetRemoteURL(name string) (string, error)`**
   Returns the URL for the specified remote
+
+- **`client.GetFirstRemoteURL() (string, error)`**
+  Returns the URL of the first available remote
 
 ### Configuration Types
 

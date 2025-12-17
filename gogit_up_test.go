@@ -81,3 +81,24 @@ func TestClient_GetRemoteURL(t *testing.T) {
 	require.Equal(t, "https://github.com/example/repo.git", remoteURL)
 	t.Log("origin URL:", remoteURL)
 }
+
+// TestClient_GetFirstRemoteURL verifies getting first remote URL
+// Should return URL of the first available remote
+//
+// TestClient_GetFirstRemoteURL 验证获取第一个远程 URL
+// 应该返回第一个可用远程的 URL
+func TestClient_GetFirstRemoteURL(t *testing.T) {
+	tempDIR := setupTestRepo(t)
+
+	client, err := gogit.New(tempDIR)
+	require.NoError(t, err)
+
+	// Add a remote to use in test validation
+	// 添加远程用于测试验证
+	require.NoError(t, gogitassist.AddRemote(client.Repo(), "origin", "https://github.com/example/repo.git"))
+
+	remoteURL, err := client.GetFirstRemoteURL()
+	require.NoError(t, err)
+	require.Equal(t, "https://github.com/example/repo.git", remoteURL)
+	t.Log("first remote URL:", remoteURL)
+}
